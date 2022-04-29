@@ -39,16 +39,18 @@ do
         return load(buffer, "=init")
     end
 
-    do
-        local screen = component.list("screen")()
-        local gpu = component.list("gpu")()
-        if gpu and screen then
-          boot_invoke(gpu, "bind", screen)
-        end
+    local screen = component.list("screen")()
+    local gpu = component.list("gpu")()
+    if gpu and screen then
+        boot_invoke(gpu, "bind", screen)
+    end
+
+    if not gpu then
+        error("No graphics card available")
     end
 
     while true do
-        Components.gpu.set(1, 1, "Choose boot drive: ")
+        gpu.set(1, 1, "Choose boot drive: ")
 
         local fs = {}
 
@@ -57,7 +59,7 @@ do
         end
 
         for i=1,#fs do
-            Components.gpu.set(1, i+1, "> " .. fs[i])
+            gpu.set(1, i+1, "> " .. fs[i])
         end
 
         local keyboard = component.list("keyboard")()
