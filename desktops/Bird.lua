@@ -3,6 +3,23 @@ Bird.RGPU = Drivers.rgpu
 
 function Bird:load()
   self.RGPU:clear()
+  local w, h = self.RGPU.gpu.getResolution()
+  self.RGPU:drawWithInstructions({
+    {
+      type = "rect",
+      x = 3,
+      y = 3,
+      w = w-3,
+      h = w-3,
+      pixel = self.RGPU:pixel(0x1c76ba, " ", false),
+    },
+    {
+      type = "text",
+      x = 1,
+      y = 1,
+      text = "Loading Desktop Environment...",
+    }
+  })
 end
 
 function Bird:processSignal(signal)
@@ -20,6 +37,7 @@ end
 
 function Bird:show()
   local sw,sy = self.RGPU.gpu.getResolution()
+  self.RGPU.gpu.setBackground(0x1c76ba)
   self.RGPU:clear()
   self.RGPU:drawWithInstructions(
     {

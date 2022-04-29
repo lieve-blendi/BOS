@@ -38,7 +38,7 @@ end
 function RGPU:clear()
     local width, height = self.gpu.getResolution()
 
-    self.gpu.fill(0, 0, width, height, " ")
+    self.gpu.fill(1, 1, width, height, " ")
 end
 
 RGPU.image = {}
