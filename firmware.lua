@@ -41,15 +41,15 @@ do
         computer.setBootAddress(addr)
         local handle, reason = boot_invoke(address, "open", "/init.lua")
         if not handle then
-        return nil, reason
+            return nil, reason
         end
         local buffer = ""
         repeat
-        local data, reason = boot_invoke(address, "read", handle, math.huge)
-        if not data and reason then
-            return nil, reason
-        end
-        buffer = buffer .. (data or "")
+            local data, reason = boot_invoke(address, "read", handle, math.huge)
+            if not data and reason then
+                return nil, reason
+            end
+            buffer = buffer .. (data or "")
         until not data
         boot_invoke(address, "close", handle)
         return load(buffer, "=init")
@@ -68,7 +68,7 @@ do
 
         local fs = {}
 
-        for fileSys in computer.list("filesystem") do
+        for fileSys in component.list("filesystem") do
             table.insert(fs, fileSys)
         end
 
