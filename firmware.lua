@@ -1,7 +1,5 @@
 -- Special BIOS
 do
-    local componentsCache = {}
-
     local component_invoke = component.invoke
     local function boot_invoke(address, method, ...)
         local result = table.pack(pcall(component_invoke, address, method, ...))
@@ -11,8 +9,7 @@ do
         return table.unpack(result, 2, result.n)
         end
     end
-
-    -- backwards compatibility, may remove later
+    
     local eeprom = component.list("eeprom")()
     computer.getBootAddress = function()
         return boot_invoke(eeprom, "getData")
@@ -49,11 +46,6 @@ do
         error("No graphics card available")
     end
 
-    local keyboard = component.list("keyboard")()
-    local function ikd(k)
-        return boot_invoke(keyboard, "isKeyDown", k)
-    end
-
     while true do
         boot_invoke(gpu, "set", 1, 1, "Choose boot drive: ")
 
@@ -67,15 +59,17 @@ do
             boot_invoke(gpu, "set", 1, i+1, ">" .. fs[i])
         end
 
-        if ikd(0x1C) then
+        local e, addr, char, code = computer.pullSignal()
+
+        if code == 0x1C then
             boot(computer.getBootAddress())
-        elseif ikd(0x02) then
+        elseif code ==0x02 then
             boot(fs[1])
-        elseif ikd(0x03) then
+        elseif code == 0x03 then
             boot(fs[2])
-        elseif ikd(0x04) then
+        elseif code == 0x04 then
             boot(fs[3])
-        elseif ikd(0x05) then
+        elseif code == 0x05 then
             boot(fs[4])
         end
     end
