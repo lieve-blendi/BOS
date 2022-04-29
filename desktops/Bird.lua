@@ -40,7 +40,7 @@ function Bird:show()
   self.RGPU.gpu.setBackground(0x000000)
   self.RGPU:clear()
 
-  local debugText = "Memory Usage: " .. tostring((computer.totalMemory() - computer.freeMemory()) / computer.freeMemory()) .. "%"
+  local debugText = "Memory Usage: " .. tostring(math.floor((computer.totalMemory() - computer.freeMemory()) / computer.freeMemory() + 0.5)) .. "%"
 
   self.RGPU:drawWithInstructions(
     {
