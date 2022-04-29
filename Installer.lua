@@ -12,18 +12,9 @@ local filePaths = {
   "/shells/Carrot.lua"
 }
 
-local function getComponentAddress(name)
-	return component.list(name)() or error("Required " .. name .. " component is missing")
-end
+local component = require("component")
 
-local function getComponentProxy(name)
-	return component.proxy(getComponentAddress(name))
-end
-
-local EEPROMProxy, internetProxy, GPUProxy = 
-	getComponentProxy("eeprom"),
-	getComponentProxy("internet"),
-	getComponentProxy("gpu")
+local eeprom = component.eeprom
 
 local function isLuaScript(path)
   return (path:sub(-4) == ".lua")
@@ -60,8 +51,8 @@ do
   for chunk in handle do result = result .. chunk end
   
   handle.close()
-  EEPROMProxy.set(result)
-  EEPROMProxy.setLabel("B-BIOS")
+  eeprom.set(result)
+  eeprom.setLabel("B-BIOS")
 end
 
 computer.shutdown(true)
