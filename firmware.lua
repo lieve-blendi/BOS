@@ -62,6 +62,7 @@ do
         local e, addr, char, code = computer.pullSignal()
 
         if e == "key_down" then
+            boot_invoke(gpu, "set", 1, 30, tostring(code))
             if code == 0x1C then
                 boot(computer.getBootAddress())
             elseif code ==0x02 then
@@ -73,6 +74,7 @@ do
             elseif code == 0x05 then
                 boot(fs[4])
             end
+            break
         end
     end
 end
