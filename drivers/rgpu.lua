@@ -66,12 +66,8 @@ function RGPU.image:set(image, x, y, pixel)
 end
 
 function RGPU:setPixel(x, y, pixel)
-    local oldColor, isPallete = self.gpu.getForeground()
-
     self.gpu.setForeground(pixel.co, pixel.p)
     self.gpu.set(i, j, pixel.ca)
-
-    self.gpu.setForeground(oldColor, isPallete)
 end
 
 function RGPU.image:get(image, x, y, pixel)
@@ -99,12 +95,8 @@ end
 function RGPU:drawWithInstructions(instructions)
     for _, ins in ipairs(instructions) do
         if ins.type == "rect" then
-            local oldColor, isPallete = self.gpu.getBackground()
-
             self.gpu.setBackground(ins.pixel.co, ins.pixel.p)
             self.gpu.fill(ins.x, ins.y, ins.w, ins.h, ins.pixel.ca)
-
-            self.gpu.setBackground(oldColor, isPallete)
         elseif ins.type == "copy" then
             self.gpu.copy(ins.x, ins.y, ins.w, ins.h, ins.dx, ins.dy)
         elseif ins.type == "shader" then
