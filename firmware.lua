@@ -46,11 +46,7 @@ do
             buffer = buffer .. (data or "")
         until not data
         boot_invoke(address, "close", handle)
-        local loadedOS, reason = load(buffer, "=init")
-        if not loadedOS then
-            error("Failed to load OS: " .. reason)
-        end
-        init = loadedOS
+        init, reason = load(buffer, "=init")
     end
 
     local width, height = boot_invoke(gpu, "getResolution")
@@ -90,5 +86,8 @@ do
     else
         computer.shutdown(true)
     end
+end
+if not init then
+    error("Failed to load OS: " .. reason)
 end
 init()
