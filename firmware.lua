@@ -9,7 +9,7 @@ do
         return table.unpack(result, 2, result.n)
         end
     end
-    
+
     local eeprom = component.list("eeprom")()
     computer.getBootAddress = function()
         return boot_invoke(eeprom, "getData")
@@ -61,16 +61,18 @@ do
 
         local e, addr, char, code = computer.pullSignal()
 
-        if code == 0x1C then
-            boot(computer.getBootAddress())
-        elseif code ==0x02 then
-            boot(fs[1])
-        elseif code == 0x03 then
-            boot(fs[2])
-        elseif code == 0x04 then
-            boot(fs[3])
-        elseif code == 0x05 then
-            boot(fs[4])
+        if e == "key_down" then
+            if code == 0x1C then
+                boot(computer.getBootAddress())
+            elseif code ==0x02 then
+                boot(fs[1])
+            elseif code == 0x03 then
+                boot(fs[2])
+            elseif code == 0x04 then
+                boot(fs[3])
+            elseif code == 0x05 then
+                boot(fs[4])
+            end
         end
     end
 end
