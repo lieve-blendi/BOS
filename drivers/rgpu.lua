@@ -99,12 +99,12 @@ end
 function RGPU:drawWithInstructions(instructions)
     for _, ins in ipairs(instructions) do
         if ins.type == "rect" then
-            local oldColor, isPallete = self.gpu.getForeground()
+            local oldColor, isPallete = self.gpu.getBackground()
 
-            self.gpu.setForeground(ins.pixel.co, ins.pixel.p)
+            self.gpu.setBackground(ins.pixel.co, ins.pixel.p)
             self.gpu.fill(ins.x, ins.y, ins.w, ins.h, ins.pixel.ca)
 
-            self.gpu.setForeground(oldColor, isPallete)
+            self.gpu.setBackground(oldColor, isPallete)
         elseif ins.type == "copy" then
             self.gpu.copy(ins.x, ins.y, ins.w, ins.h, ins.dx, ins.dy)
         elseif ins.type == "shader" then

@@ -6,7 +6,7 @@ function Bird:load()
 end
 
 function Bird:processSignal(signal)
-  if type(signal[1]) == "table" then
+  if type(signal[1]) == "string" then
     self.RGPU:drawWithInstructions({
       {
         type = "text",
