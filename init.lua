@@ -1,5 +1,9 @@
 -- Boot stuff
 
+OS = {}
+OS.name = "BOS"
+OS.version = "0.0.1"
+
 local componentsCache = {}
 
 local bootDir = computer.getBootAddress()
