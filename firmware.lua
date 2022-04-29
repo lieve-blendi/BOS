@@ -1,5 +1,6 @@
 -- Special BIOS
 local init
+local initreason
 do
     local component_invoke = component.invoke
     local function boot_invoke(address, method, ...)
@@ -46,7 +47,7 @@ do
             buffer = buffer .. (data or "")
         until not data
         boot_invoke(address, "close", handle)
-        init, reason = load(buffer, "=init")
+        return load(buffer, "=init")
     end
 
     local width, height = boot_invoke(gpu, "getResolution")
@@ -74,15 +75,15 @@ do
     until e == "key_down"
 
     if code == 28 then
-        tryLoadFrom(computer.getBootAddress())
+        init, initreason = tryLoadFrom(computer.getBootAddress())
     elseif code == 2 then
-        tryLoadFrom(fs[1])
+        init, initreason = tryLoadFrom(fs[1])
     elseif code == 3 then
-        tryLoadFrom(fs[2])
+        init, initreason = tryLoadFrom(fs[2])
     elseif code == 4 then
-        tryLoadFrom(fs[3])
+        init, initreason = tryLoadFrom(fs[3])
     elseif code == 5 then
-        tryLoadFrom(fs[4])
+        init, initreason = tryLoadFrom(fs[4])
     else
         computer.shutdown(true)
     end
@@ -90,5 +91,5 @@ end
 if init then
     init()
 else
-    error("Failed to load OS: " .. reason)
+    error("Failed to load OS: " .. initreason)
 end
