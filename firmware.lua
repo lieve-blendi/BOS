@@ -50,6 +50,7 @@ do
             error("Failed to load OS: " .. reason)
         end
         loadedOS()
+        coroutine.yield()
     end
 
     local width, height = boot_invoke(gpu, "getResolution")
@@ -68,7 +69,7 @@ do
 
     boot_invoke(gpu, "set", 1, #fs+2, "Press keys 1-4 to boot")
     boot_invoke(gpu, "set", 1, #fs+3, "Press enter to boot to default drive")
-    boot_invoke(gpu, "set", 1, #fs+3, "Press any other key to reboot")
+    boot_invoke(gpu, "set", 1, #fs+4, "Press any other key to reboot")
 
     local e, addr, char, code
     
