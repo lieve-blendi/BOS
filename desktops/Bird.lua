@@ -45,7 +45,7 @@ function Bird:show()
   self.RGPU:drawWithInstructions(
     {
       {type = "rect", x = 1, y = 1, w = sw, h = 1, pixel = self.RGPU:pixel(0x1c76ba, " ", false)},
-      {type = "text", x = 2, y = 1, text = OS.name .. " v" .. OS.version .. "- Bird Desktop Environment"},
+      {type = "text", x = 2, y = 1, text = OS.name .. " v" .. OS.version .. " - Bird Desktop Environment"},
       {type = "text", x = sw - #debugText, y = 1, text = debugText}
     }
   )
