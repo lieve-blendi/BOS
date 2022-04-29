@@ -1,5 +1,5 @@
 # BOS
-B Operating System is an open-source OS made from scratch for the OpenComputers minecraft mod.
+BOS is an open-source OS made from scratch for the OpenComputers minecraft mod.
 
 # What does it provide by default?
 It provides, or will provide soon enough:
