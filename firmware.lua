@@ -87,7 +87,8 @@ do
         computer.shutdown(true)
     end
 end
-if not init then
+if init then
+    init()
+else
     error("Failed to load OS: " .. reason)
 end
-init()
