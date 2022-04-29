@@ -37,7 +37,7 @@ end
 
 function Bird:show()
   local sw,sy = self.RGPU.gpu.getResolution()
-  self.RGPU.gpu.setBackground(0x1c76ba)
+  self.RGPU.gpu.setBackground(0x000000)
   self.RGPU:clear()
   self.RGPU:drawWithInstructions(
     {
