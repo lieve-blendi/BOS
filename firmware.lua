@@ -37,38 +37,29 @@ do
     end
     }) -- Components table
 
-    local FileSystem = {
-        addr = bootDir,
-        changeAddress = function(self, newAddress)
-            self.addr = newAddress
-            Components.filesystem = component.proxy(newAddress)
-            self.open = Components.filesystem.open
-            self.close = Components.filesystem.close
-            self.read = Components.filesystem.read
-        end,
-        open = Components.filesystem.open,
-        read = function(handle) return Components.filesystem.read(handle, math.huge) end,
-        close = Components.filesystem.close,
-        loadfile = function(self, file)
-            local hdl, err = self.open(file, 'r')
-            if not hdl then error(err) end
-            local buffer = ''
-            repeat
-                local data, err_read = self.read(hdl)
-                if not data and err_read then error(err_read) end
-                buffer = buffer .. (data or '')
-            until not data
-            self.close(hdl)
-            return load(buffer, '=' .. file, "bt", _G)()
-        end,
-    }
-
     local function boot(addr)
-        FileSystem:changeAddress(addr)
-        Computer.setBootAddress(addr)
-        local init, reason = FileSystem:loadfile("init.lua")
-        if not init then
-            error("Failed to boot drive. Reason: " .. reason)
+        computer.setBootAddress(addr)
+        local handle, reason = boot_invoke(address, "open", "/init.lua")
+        if not handle then
+        return nil, reason
+        end
+        local buffer = ""
+        repeat
+        local data, reason = boot_invoke(address, "read", handle, math.huge)
+        if not data and reason then
+            return nil, reason
+        end
+        buffer = buffer .. (data or "")
+        until not data
+        boot_invoke(address, "close", handle)
+        return load(buffer, "=init")
+    end
+
+    do
+        local screen = component.list("screen")()
+        local gpu = component.list("gpu")()
+        if gpu and screen then
+          boot_invoke(gpu, "bind", screen)
         end
     end
 
