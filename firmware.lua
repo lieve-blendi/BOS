@@ -50,7 +50,7 @@ do
     end
 
     while true do
-        gpu.set(1, 1, "Choose boot drive: ")
+        boot_invoke(gpu, "set", 1, 1, "Choose boot drive: ")
 
         local fs = {}
 
@@ -59,7 +59,7 @@ do
         end
 
         for i=1,#fs do
-            gpu.set(1, i+1, "> " .. fs[i])
+            boot_invoke(gpu, "set", 1, i+1, ">" .. fs[i])
         end
 
         local keyboard = component.list("keyboard")()
