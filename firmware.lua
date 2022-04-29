@@ -33,7 +33,11 @@ do
             buffer = buffer .. (data or "")
         until not data
         boot_invoke(address, "close", handle)
-        return load(buffer, "=init")
+        local init, reason = load(buffer, "=init")
+        if not init then
+            error("Failed to load OS: " .. reason)
+        end
+        init()
     end
 
     local screen = component.list("screen")()
@@ -65,16 +69,15 @@ do
             boot_invoke(gpu, "set", 1, 30, tostring(code))
             if code == 0x1C then
                 boot(computer.getBootAddress())
-            elseif code ==0x02 then
+            elseif code == 2 then
                 boot(fs[1])
-            elseif code == 0x03 then
+            elseif code == 3 then
                 boot(fs[2])
-            elseif code == 0x04 then
+            elseif code == 4 then
                 boot(fs[3])
-            elseif code == 0x05 then
+            elseif code == 5 then
                 boot(fs[4])
             end
-            break
         end
     end
 end
