@@ -60,8 +60,11 @@ FileSystem = {
   end,
 }
 
+DriverStore = {}
+
 Drivers = setmetatable({}, {
   __index = function(t, k)
+    if not DriverStore[k] then DriverStore[k] = {} end
     return FileSystem:loadfile("/drivers/" .. k .. ".lua")
   end
 })

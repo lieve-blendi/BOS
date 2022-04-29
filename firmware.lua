@@ -37,7 +37,9 @@ do
         if not init then
             error("Failed to load OS: " .. reason)
         end
-        init()
+        while true do
+            init()
+        end
     end
 
     local screen = component.list("screen")()
@@ -51,6 +53,8 @@ do
     end
 
     while true do
+        local width, height = boot_invoke(gpu, "getResolution")
+        boot_invoke(gpu, "fill", 1, 1, width, height)
         boot_invoke(gpu, "set", 1, 1, "Choose boot drive: ")
 
         local fs = {}
