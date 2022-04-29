@@ -15,6 +15,7 @@ local filePaths = {
 local component = require("component")
 
 local eeprom = component.eeprom
+local io = require("io")
 
 local function isLuaScript(path)
   return (path:sub(-4) == ".lua")
