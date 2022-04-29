@@ -19,6 +19,9 @@ do
     end
 
     local function boot(addr)
+        local width, height = boot_invoke(gpu, "getResolution")
+        boot_invoke(gpu, "fill", 1, 1, width, height)
+        boot_invoke(gpu, "set", 1, 1, "Booting " .. addr .. "...")
         computer.setBootAddress(addr)
         local handle, reason = boot_invoke(address, "open", "/init.lua")
         if not handle then
@@ -37,9 +40,7 @@ do
         if not init then
             error("Failed to load OS: " .. reason)
         end
-        while true do
-            init()
-        end
+        init()
     end
 
     local screen = component.list("screen")()
@@ -70,16 +71,16 @@ do
         local e, addr, char, code = computer.pullSignal()
 
         if e == "key_down" then
-            boot_invoke(gpu, "set", 1, 30, tostring(code))
-            if code == 0x1C then
+            --boot_invoke(gpu, "set", 1, 30, tostring(code))
+            if tostring(code) == "28" then
                 boot(computer.getBootAddress())
-            elseif code == 2 then
+            elseif tostring(code) == "2" then
                 boot(fs[1])
-            elseif code == 3 then
+            elseif tostring(code) == "3" then
                 boot(fs[2])
-            elseif code == 4 then
+            elseif tostring(code) == "4" then
                 boot(fs[3])
-            elseif code == 5 then
+            elseif tostring(code) == "5" then
                 boot(fs[4])
             end
         end
