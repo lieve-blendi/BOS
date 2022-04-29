@@ -77,6 +77,17 @@ Shells = setmetatable({}, {
   end
 })
 
+local deskCache = {}
+
+Desktops = setmetatable({}, {
+  __index = function(t, k)
+    if deskCache[k] == nil then
+      deskCache[k] = FileSystem:loadfile("/desktops/" .. k .. ".lua")
+    end
+    return deskCache[k]
+  end
+})
+
 local DE
 
 function SetDesktopEnvironment(de)
@@ -99,7 +110,7 @@ function error(err)
   computer.shutdown(true)
 end
 
-SetDesktopEnvironment(FileSystem:load("/desktops/Bird.lua"))
+SetDesktopEnvironment(FileSystem:loadfile("/desktops/Bird.lua"))
 
 while true do
   if DE then
