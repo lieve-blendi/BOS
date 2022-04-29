@@ -72,15 +72,15 @@ do
 
         if e == "key_down" then
             boot_invoke(gpu, "set", 30, 1, tostring(char) .. " " .. tostring(code))
-            if tostring(code) == "28" then
+            if code == 28 then
                 boot(computer.getBootAddress())
-            elseif tostring(code) == "2" then
+            elseif code == 2 then
                 boot(fs[1])
-            elseif tostring(code) == "3" then
+            elseif code == 3 then
                 boot(fs[2])
-            elseif tostring(code) == "4" then
+            elseif code == 4 then
                 boot(fs[3])
-            elseif tostring(code) == "5" then
+            elseif code == 5 then
                 boot(fs[4])
             end
         end
