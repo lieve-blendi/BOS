@@ -1,4 +1,5 @@
 -- Special BIOS
+local init
 do
     local component_invoke = component.invoke
     local function boot_invoke(address, method, ...)
@@ -49,8 +50,7 @@ do
         if not loadedOS then
             error("Failed to load OS: " .. reason)
         end
-        loadedOS()
-        coroutine.yield()
+        init = loadedOS
     end
 
     local width, height = boot_invoke(gpu, "getResolution")
@@ -91,3 +91,4 @@ do
         computer.shutdown(true)
     end
 end
+init()
