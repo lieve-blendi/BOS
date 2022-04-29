@@ -1,5 +1,3 @@
--- This system will likely get updated with better stuff
-
 local repoPath = "https://raw.githubusercontent.com/lieve-blendi/BOS/main"
 
 local filePaths = {
@@ -31,7 +29,34 @@ if not internet then
   return
 end
 
--- should we make people select what drive?
+local drives = {}
+
+for fileSys in component.list("filesystem") do
+  if computer.tmpAddress() ~= fileSys then
+    local proxy = component.proxy(fileSys)
+    if proxy.spaceTotal() > 1024*1024 then
+      table.insert(drives, fileSys)
+    end
+  end
+end
+
+print("Welcome to the BOS installer!\nPlease pick a drive to install to:")
+for k,v in ipairs(drives) do
+  local proxy = component.proxy(v)
+  print(k .. ". " .. proxy.spaceTotal()/1024/1024 .. "MB - " .. v)
+end
+local pickeddrive
+
+while pickeddrive == nil do
+  local picked = io.read()
+  if drives[tonumber(picked)] then
+    pickeddrive = drives[tonumber(picked)]
+  end
+  os.sleep()
+end
+
+local pickeddriveproxy = component.proxy(pickeddrive)
+print("You picked drive: " .. pickeddrive)
 
 for _, p in ipairs(filePaths) do
   if isLuaScript(p) then
@@ -40,18 +65,18 @@ for _, p in ipairs(filePaths) do
     local handle = internet.request(repoPath .. p)
     for chunk in handle do result = result .. chunk end
     
-    local f = io.open(p, "w")
+    local f = pickeddriveproxy.open(p, "w")
     if f then
       print("Installing file " .. p .. "...")
-      f:write(result)
-      f:close()
+      pickeddriveproxy.write(f,result)
+      pickeddriveproxy.close(f)
     end
   else
-    fs.makeDirectory(p)
+    pickeddriveproxy.makeDirectory(p)
   end
 end
 
--- How do i set drive label?
+pickeddriveproxy.setLabel("BOS")
 
 print("Would you like to install our custom BIOS?")
 ans = io.read()
