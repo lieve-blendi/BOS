@@ -40,12 +40,12 @@ function Bird:show()
   self.RGPU.gpu.setBackground(0x064024)
   self.RGPU:clear()
 
-  local debugText = "Memory Usage: " .. tostring(math.floor((computer.totalMemory() - computer.freeMemory()) / computer.freeMemory() + 0.5*10)/10) .. "%"
+  local debugText = "Memory Usage: " .. tostring(math.floor((computer.totalMemory() - computer.freeMemory()) / computer.totalMemory() + 0.5*10)/10) .. "%"
 
   self.RGPU:drawWithInstructions(
     {
       {type = "rect", x = 1, y = 1, w = sw, h = 1, pixel = self.RGPU:pixel(0x1c76ba, " ", false)},
-      {type = "text", x = 1, y = 1, text = "BOS - Bird Desktop Environment"},
+      {type = "text", x = 2, y = 1, text = "BOS - Bird Desktop Environment"},
       {type = "text", x = sw - #debugText, y = 1, text = debugText}
     }
   )
