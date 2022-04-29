@@ -31,6 +31,8 @@ if not internet then
   return
 end
 
+-- should we make people select what drive?
+
 for _, p in ipairs(filePaths) do
   if isLuaScript(p) then
     local result = ""
@@ -38,14 +40,17 @@ for _, p in ipairs(filePaths) do
     local handle = internet.request(repoPath .. p)
     for chunk in handle do result = result .. chunk end
     
-    handle.close()
     local f = io.open(p, "w")
-    f:write(result)
-    f:close()
+    if f then
+      f:write(result)
+      f:close()
+    end
   else
     fs.makeDirectory(p)
   end
 end
+
+-- How do i set drive label?
 
 print("Would you like to install our custom BIOS?")
 ans = io.read()
