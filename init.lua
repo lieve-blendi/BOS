@@ -112,6 +112,8 @@ end
 
 SetDesktopEnvironment(FileSystem:loadfile("/desktops/Bird.lua"))
 
+DE:load()
+
 while true do
   if DE then
     local signal = {computer.pullSignal(0.01)}
