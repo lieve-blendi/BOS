@@ -10,7 +10,7 @@ function Bird:show()
   Bird.RGPU:drawWithInstructions(
     {
       {type = "rect", x = 1, y = 1, w = sw, h = 1, pixel = Bird.RGPU:pixel(0x1c76ba, " ", false)},
-      {type = "text", x = 1, y = 1, text = "ur mom"}
+      {type = "text", x = 1, y = 1, text = "BOS"}
     }
   )
 end
