@@ -23,16 +23,16 @@ function Bird:load()
 end
 
 function Bird:processSignal(signal)
-  if type(signal[1]) == "string" then
-    self.RGPU:drawWithInstructions({
-      {
-        type = "text",
-        x = 1,
-        y = 2,
-        text = signal[1],
-      }
-    })
-  end
+  -- if type(signal[1]) == "string" then
+  --   self.RGPU:drawWithInstructions({
+  --     {
+  --       type = "text",
+  --       x = 1,
+  --       y = 2,
+  --       text = signal[1],
+  --     }
+  --   })
+  -- end
 end
 
 function Bird:show()
@@ -40,7 +40,7 @@ function Bird:show()
   self.RGPU.gpu.setBackground(0x064024)
   self.RGPU:clear()
 
-  local debugText = "Memory Usage: " .. tostring(math.floor((computer.totalMemory() - computer.freeMemory()) / computer.totalMemory() + 0.5*10)/10) .. "%"
+  local debugText = "Memory Usage: " .. tostring(math.floor((computer.totalMemory() - computer.freeMemory()) / computer.totalMemory()*1000 + 0.5)/10) .. "%"
 
   self.RGPU:drawWithInstructions(
     {
