@@ -46,11 +46,6 @@ for _, p in ipairs(filePaths) do
     fs.makeDirectory(p)
   end
 end
-print("Would you like to install our custom BIOS?")
-ans = io.read()
-if ans == "Y" or ans == "y" or ans == "Yes" or ans == "yes" then
-  do
-    local result = ""
 
 print("Would you like to install our custom BIOS?")
 ans = io.read()
