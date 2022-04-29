@@ -49,6 +49,11 @@ do
         error("No graphics card available")
     end
 
+    local keyboard = component.list("keyboard")()
+    local function ikd(k)
+        return boot_invoke(keyboard, "isKeyDown", k)
+    end
+
     while true do
         boot_invoke(gpu, "set", 1, 1, "Choose boot drive: ")
 
@@ -62,17 +67,15 @@ do
             boot_invoke(gpu, "set", 1, i+1, ">" .. fs[i])
         end
 
-        local keyboard = component.list("keyboard")()
-
-        if keyboard.isKeyDown(0x1C) then
+        if ikd(0x1C) then
             boot(computer.getBootAddress())
-        elseif keyboard.isKeyDown(0x02) then
+        elseif ikd(0x02) then
             boot(fs[1])
-        elseif keyboard.isKeyDown(0x03) then
+        elseif ikd(0x03) then
             boot(fs[2])
-        elseif keyboard.isKeyDown(0x04) then
+        elseif ikd(0x04) then
             boot(fs[3])
-        elseif keyboard.isKeyDown(0x05) then
+        elseif ikd(0x05) then
             boot(fs[4])
         end
     end
