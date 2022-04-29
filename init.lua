@@ -66,6 +66,23 @@ Drivers = setmetatable({}, {
   end
 })
 
+local shellCache = {}
+
+Shells = setmetatable({}, {
+  __index = function(t, k)
+    if shellCache[k] == nil then
+      shellCache[k] = FileSystem:loadfile("/shells/" .. k .. ".lua")
+    end
+    return shellCache[k]
+  end
+})
+
+local DE
+
+function SetDesktopEnvironment(de)
+  DE = de
+end
+
 function error(err)
   Components.gpu.setForeground(0xFFFFFF)
   Components.gpu.setBackground(0x000000)
@@ -73,7 +90,7 @@ function error(err)
 
   local gpu = Components.gpu
 
-  gpu.set(1, 1, "KOCOS Error Screen")
+  gpu.set(1, 1, "BOS Error Screen")
   gpu.set(1, 3, tostring(err) .. "_")
 
   repeat
@@ -82,12 +99,11 @@ function error(err)
   computer.shutdown(true)
 end
 
-local prints = FileSystem:loadfile("/libs/prints.lua")
-
-local debugStack = prints.new(width, height)
-
 while true do
-  debugStack.write("e")
-  debugStack.show()
+  if DE then
+    local signal = {computer.pullSignal(0.01)}
+    if signal[1] ~= nil then DE:processSignal(signal) end 
+    DE:show()
+  end
 end
 
