@@ -25,12 +25,12 @@ do
     if gpu and screen then
         boot_invoke(gpu, "bind", screen)
     end
+    local width, height = boot_invoke(gpu, "getResolution")
 
     if not gpu then
         error("No graphics card available")
     end
     local function tryLoadFrom(addr)
-        local width, height = boot_invoke(gpu, "getResolution")
         boot_invoke(gpu, "fill", 1, 1, width, height)
         boot_invoke(gpu, "set", 1, 1, "Booting " .. addr .. "...")
         computer.setBootAddress(addr)
@@ -50,18 +50,24 @@ do
         return load(buffer, "=init")
     end
 
-    local width, height = boot_invoke(gpu, "getResolution")
     boot_invoke(gpu, "fill", 1, 1, width, height)
     boot_invoke(gpu, "set", 1, 1, "Choose boot drive: ")
 
     local fs = {}
 
     for fileSys in component.list("filesystem") do
-        table.insert(fs, fileSys)
+        if computer.tmpAddress() ~= fileSys then
+            table.insert(fs, fileSys)
+        end
     end
 
     for i=1,#fs do
-        boot_invoke(gpu, "set", 1, i+1, tostring(i) .. ". " .. fs[i])
+        local label = component.proxy(fs[i]).getLabel()
+        if label then
+            boot_invoke(gpu, "set", 1, i+1, tostring(i) .. ". " .. label .. " (" .. fs[i] .. ")")
+        else
+            boot_invoke(gpu, "set", 1, i+1, tostring(i) .. ". " .. fs[i])
+        end
     end
 
     boot_invoke(gpu, "set", 1, #fs+2, "Press keys 1-4 to boot")
