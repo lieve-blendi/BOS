@@ -42,6 +42,7 @@ for _, p in ipairs(filePaths) do
     
     local f = io.open(p, "w")
     if f then
+      print("Installing file " .. p .. "...")
       f:write(result)
       f:close()
     end
@@ -60,8 +61,10 @@ if ans == "Y" or ans == "y" or ans == "Yes" or ans == "yes" then
   local handle = internet.request(repoPath .. "/firmware.lua")
   for chunk in handle do result = result .. chunk end
   
+  print("Installing BIOS...")
   eeprom.set(result)
   eeprom.setLabel("B-BIOS")
+  print("BIOS installed!")
 end
 
 computer.shutdown(true)
