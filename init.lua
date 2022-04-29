@@ -99,6 +99,8 @@ function error(err)
   computer.shutdown(true)
 end
 
+SetDesktopEnvironment(FileSystem:load("/desktops/Bird.lua"))
+
 while true do
   if DE then
     local signal = {computer.pullSignal(0.01)}

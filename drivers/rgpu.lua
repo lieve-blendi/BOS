@@ -29,12 +29,7 @@ function RGPU:drawWithShader(x, y, width, height, shaderFunc)
             local pixel = shaderFunc(i-x, j-y) -- Get pixel from shader
             if type(pixel) == "table" then
                 -- If we got a pixel, display it
-                local oldColor, isPallete = self.gpu.getForeground()
-
-                self.gpu.setForeground(pixel.co, pixel.p)
-                self.gpu.set(i, j, pixel.ca)
-
-                self.gpu.setForeground(oldColor, isPallete)
+                RGPU:setPixel(pixel)
             end
         end
     end
@@ -43,10 +38,65 @@ end
 function RGPU:clear()
     local width, height = self.gpu.getResolution()
 
-    self.gpu.fill(0, 0, width, height)
+    self.gpu.fill(0, 0, width, height, " ")
 end
 
-function RGPU:drawWithInstructions(x, y, instructions)
+RGPU.image = {}
+function RGPU.image:new(width, height)
+    local pixelData = {}
+
+    for i=1,width*height do
+        table.insert(pixelData, RGPU:pixel(0x000000, " ", false))
+    end
+
+    return {
+        pixelData = pixelData,
+        width = width,
+        height = height,
+        set = function(self, x, y, pixel)
+            RGPU.image:set(self, x, y, pixel)
+        end,
+    }
+end
+
+function RGPU.image:set(image, x, y, pixel)
+    local i = (x + y * width) + 1
+
+    image.pixelData[i] = pixel
+end
+
+function RGPU:setPixel(x, y, pixel)
+    local oldColor, isPallete = self.gpu.getForeground()
+
+    self.gpu.setForeground(pixel.co, pixel.p)
+    self.gpu.set(i, j, pixel.ca)
+
+    self.gpu.setForeground(oldColor, isPallete)
+end
+
+function RGPU.image:get(image, x, y, pixel)
+    local i = (x + y * width) + 1
+
+    return image.pixelData[i]
+end
+
+function RGPU:renderImage(image, ix, iy, hideEmptyBlack)
+    for x=0,imageData.width-1 do
+        for y=0,imageData.height-1 do
+            local i = (x + y * width) + 1
+            local p = image.pixelData[i]
+            if not hideEmptyBlack then
+                setPixel(ix + x, iy + y, p)
+            else
+                if ((p.isPallete) or (p.color ~= 0x000000)) then
+                    setPixel(ix + x, iy + y, p)
+                end
+            end
+        end
+    end
+end
+
+function RGPU:drawWithInstructions(instructions)
     for _, ins in ipairs(instructions) do
         if ins.type == "rect" then
             local oldColor, isPallete = self.gpu.getForeground()
