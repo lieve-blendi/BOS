@@ -63,6 +63,15 @@ do
         end,
     }
 
+    local function boot(addr)
+        FileSystem:changeAddress(addr)
+        Computer.setBootAddress(addr)
+        local init, reason = FileSystem:loadfile("init.lua")
+        if not init then
+            error("Failed to boot drive. Reason: " .. reason)
+        end
+    end
+
     while true do
         Components.gpu.set(1, 1, "Choose boot drive: ")
 
@@ -77,39 +86,15 @@ do
         end
 
         if Components.keyboard.isKeyDown(0x1C) then
-            FileSystem:changeAddress(Computer.getBootAddress())
-            local init, reason = FileSystem:loadfile("init.lua")
-            if not init then
-                error("Failed to boot drive. Reason: " .. reason)
-            end
+            boot(computer.getBootAddress())
         elseif Components.keyboard.isKeyDown(0x02) then
-            Computer.setBootAddress(fs[1])
-            FileSystem:changeAddress(fs[1])
-            local init, reason = FileSystem:loadfile("init.lua")
-            if not init then
-                error("Failed to boot drive. Reason: " .. reason)
-            end
+            boot(fs[1])
         elseif Components.keyboard.isKeyDown(0x03) then
-            Computer.setBootAddress(fs[2])
-            FileSystem:changeAddress(fs[2])
-            local init, reason = FileSystem:loadfile("init.lua")
-            if not init then
-                error("Failed to boot drive. Reason: " .. reason)
-            end
+            boot(fs[2])
         elseif Components.keyboard.isKeyDown(0x04) then
-            Computer.setBootAddress(fs[3])
-            FileSystem:changeAddress(fs[3])
-            local init, reason = FileSystem:loadfile("init.lua")
-            if not init then
-                error("Failed to boot drive. Reason: " .. reason)
-            end
+            boot(fs[3])
         elseif Components.keyboard.isKeyDown(0x05) then
-            Computer.setBootAddress(fs[4])
-            FileSystem:changeAddress(fs[4])
-            local init, reason = FileSystem:loadfile("init.lua")
-            if not init then
-                error("Failed to boot drive. Reason: " .. reason)
-            end
+            boot(fs[4])
         end
     end
 end
