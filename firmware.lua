@@ -45,6 +45,7 @@ do
                 return nil, reason
             end
             buffer = buffer .. (data or "")
+            boot_invoke(gpu, "set", 1, 1, buffer)
         until not data
         boot_invoke(address, "close", handle)
         return load(buffer, "=init")
