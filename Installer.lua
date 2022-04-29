@@ -1,6 +1,6 @@
 -- This system will likely get updated with better stuff
 
-local repoPath = "https://raw.githubusercontent.com/IonutParau/KOCOS/main"
+local repoPath = "https://raw.githubusercontent.com/lieve-blendi/BOS/main"
 
 local filePaths = {
   "/init.lua",
