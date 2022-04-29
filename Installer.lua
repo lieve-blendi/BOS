@@ -35,7 +35,6 @@ for _, p in ipairs(filePaths) do
     local handle = internet.request(repoPath .. p)
     for chunk in handle do result = result .. chunk end
     
-    handle.close()
     local f = io.open(p, "w")
     f:write(result)
     f:close()
@@ -50,7 +49,6 @@ do
   local handle = internet.request(repoPath .. "/firmware.lua")
   for chunk in handle do result = result .. chunk end
   
-  handle.close()
   eeprom.set(result)
   eeprom.setLabel("B-BIOS")
 end
