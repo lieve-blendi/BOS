@@ -21,22 +21,6 @@ do
         return boot_invoke(eeprom, "setData", address)
     end
 
-    local bootDir = computer.getBootAddress()
-
-    local Components = setmetatable({}, {
-    __index = function(_, k)
-        if componentsCache[k] == nil then
-            local proxyAddr = bootDir
-            if k ~= "filesystem" then
-                proxyAddr = component.list(k)()
-            end -- FileSystems need their drive address
-            componentsCache[k] = component.proxy(proxyAddr)
-        end
-
-        return componentsCache[k]
-    end
-    }) -- Components table
-
     local function boot(addr)
         computer.setBootAddress(addr)
         local handle, reason = boot_invoke(address, "open", "/init.lua")
@@ -76,15 +60,17 @@ do
             Components.gpu.set(1, i+1, "> " .. fs[i])
         end
 
-        if Components.keyboard.isKeyDown(0x1C) then
+        local keyboard = component.list("keyboard")()
+
+        if keyboard.isKeyDown(0x1C) then
             boot(computer.getBootAddress())
-        elseif Components.keyboard.isKeyDown(0x02) then
+        elseif keyboard.isKeyDown(0x02) then
             boot(fs[1])
-        elseif Components.keyboard.isKeyDown(0x03) then
+        elseif keyboard.isKeyDown(0x03) then
             boot(fs[2])
-        elseif Components.keyboard.isKeyDown(0x04) then
+        elseif keyboard.isKeyDown(0x04) then
             boot(fs[3])
-        elseif Components.keyboard.isKeyDown(0x05) then
+        elseif keyboard.isKeyDown(0x05) then
             boot(fs[4])
         end
     end
