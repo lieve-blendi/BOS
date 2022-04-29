@@ -71,8 +71,8 @@ do
         local e, addr, char, code = computer.pullSignal()
 
         if e == "key_down" then
-            boot_invoke(gpu, "set", 30, 1, type(code))
             if code == 28 then
+                boot_invoke(gpu, "set", 1, 1, "You got mail")
                 boot(computer.getBootAddress())
             elseif code == 2 then
                 boot(fs[1])
