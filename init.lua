@@ -60,6 +60,12 @@ FileSystem = {
   end,
 }
 
+Drivers = setmetatable({}, {
+  __index = function(t, k)
+    return FileSystem:loadfile("/drivers/" .. k .. ".lua")
+  end
+})
+
 function error(err)
   Components.gpu.setForeground(0xFFFFFF)
   Components.gpu.setBackground(0x000000)
