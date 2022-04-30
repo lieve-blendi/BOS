@@ -10,7 +10,6 @@ do
         return table.unpack(result, 2, result.n)
         end
     end
-
     local eeprom = component.list("eeprom")()
     computer.getBootAddress = function()
         return boot_invoke(eeprom, "getData")
@@ -18,18 +17,16 @@ do
     computer.setBootAddress = function(address)
         return boot_invoke(eeprom, "setData", address)
     end
-
     local screen = component.list("screen")()
     local gpu = component.list("gpu")()
     if gpu and screen then
         boot_invoke(gpu, "bind", screen)
     end
-    local width, height = boot_invoke(gpu, "getResolution")
-
     if not gpu then
         error("No graphics card available")
     end
     local function tryLoadFrom(addr)
+        if not addr then return end
         boot_invoke(gpu, "fill", 1, 1, width, height)
         boot_invoke(gpu, "set", 1, 1, "Booting " .. addr .. "...")
         computer.setBootAddress(addr)
@@ -48,16 +45,16 @@ do
         boot_invoke(addr, "close", handle)
         return load(buffer, "=init")
     end
-    local gpuc = component.proxy(gpu)
+    local booted = false
     while true do
-        local width, height = gpuc.getResolution()
-        gpuc.fill(1, 1, width, height, " ")
+        local width, height = boot_invoke(gpu, "getResolution")
+        boot_invoke(gpu, "fill", 1, 1, width, height, " ")
         local fs = {}
         local txt = {}
         for fileSys in component.list("filesystem") do
             if computer.tmpAddress() ~= fileSys then
                 table.insert(fs, fileSys)
-                local label = component.proxy(fs[i]).getLabel()
+                local label = component.proxy(fileSys).getLabel()
                 if label then
                     table.insert(txt, "Drive: " .. label .. " (" .. fileSys .. ")")
                 else
@@ -65,38 +62,38 @@ do
                 end
             end
         end
-
+        if #fs == 1 then
+            init, initreason = tryLoadFrom(fs[1])
+            break
+        end
         table.insert(txt, "Boot default drive")
         table.insert(txt, "Restart")
-
-        gpuc.setForeground(0x000000)
-        gpuc.setBackground(0xFFFFFF)
-        gpuc.set(1, 1, "SnowBoot v0.1")
-        local memTxt = "Memory Usage: " .. tostring(math.floor((computer.totalMemory() - computer.freeMemory()) / computer.totalMemory()*1000 + 0.5)/10) .. "%"
-        gpuc.set(width-#memTxt, 1, memTxt)
-
-        gpuc.setForeground(0xFFFFFF)
-        gpuc.setBackground(0x000000)
-        local id, btn, x, y = computer.pullSIgnal()
-
+        boot_invoke(gpu, "set", 1, 1, "SnowBoot v0.1")
+        for i, t in ipairs(txt) do
+            boot_invoke(gpu, "set", 1, i+1, t)
+        end
+        local id, btn, x, y = computer.pullSignal()
         if id == "touch" then
-            -- Mouse clicked
-            if x > 1 and x <= (#txt+1) then
-                local i = x-1
+            if y > 1 and y <= (#txt+1) then
+                local i = y-1
 
                 for ind, f in ipairs(fs) do
                     if ind == i then
                         init, initreason = tryLoadFrom(f)
+                        booted = true
                     end
                 end
                 i = i - #fs
                 if i == 1 then
-                    tryLoadFrom(computer.getBootAddress())
+                    init, initreason = tryLoadFrom(computer.getBootAddress())
+                    booted = true
                 elseif i == 2 then
                     computer.shutdown(true)
+                    booted = true
                 end
             end
         end
+        if booted then break end
     end
 end
 if init then
