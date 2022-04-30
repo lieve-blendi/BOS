@@ -271,7 +271,7 @@ local function handleInput()
         pointer = 1
         return
     end
-    if current == "boot" and pointer == (#fs+1) then
+    if current == "boot" and pointer == ((#bootableFS())+1) then
         current = "main"
         options = getOptions()
         pointer = 1
