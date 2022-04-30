@@ -136,6 +136,8 @@ end
 
 local msg
 
+local options = getOptions()
+
 local function handleInput()
     if current == "main" and pointer == 1 then
         current = "boot"
@@ -154,13 +156,13 @@ local function handleInput()
         return
     end
 
-    if current == "boot" and pointer == #(fs+1) then
+    if current == "boot" and pointer == (#fs+1) then
         current = "main"
         options = getOptions()
         pointer = 1
         return
     end
-    if current == "wipe" and pointer == #(fs+1) then
+    if current == "wipe" and pointer == (#fs+1) then
         current = "main"
         options = getOptions()
         pointer = 1
@@ -184,8 +186,6 @@ local function handleInput()
     end
 end
 
-local options = getOptions()
-
 local KeyMap = {
     enter = 0x1C,
     up = 0xC8,
@@ -201,6 +201,8 @@ repeat
     gpu.fill(1, 1, w, h, " ")
 
     gpu.set(1, 1, "NetworkBoot")
+    local memText = "Memory Usage: " .. tostring(math.floor((computer.totalMemory() - computer.freeMemory()) / computer.totalMemory()*1000 + 0.5)/10) .. "%"
+    gpu.set(w-#memText, 1, memText)
 
     for i, option in ipairs(options) do
         if pointer == i then
