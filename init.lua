@@ -66,10 +66,13 @@ FileSystem = {
 
 DriverStore = {}
 
+local driverCache = {}
+
 Drivers = setmetatable({}, {
   __index = function(t, k)
+    if not driverCache[k] then driverCache[k] = FileSystem:loadfile("/drivers/" .. k .. ".lua") end 
     if not DriverStore[k] then DriverStore[k] = {} end
-    return FileSystem:loadfile("/drivers/" .. k .. ".lua")
+    return driverCache[k]
   end
 })
 
