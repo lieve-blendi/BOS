@@ -10,7 +10,6 @@ do
         return table.unpack(result, 2, result.n)
         end
     end
-
     local eeprom = component.list("eeprom")()
     computer.getBootAddress = function()
         return boot_invoke(eeprom, "getData")
@@ -18,13 +17,11 @@ do
     computer.setBootAddress = function(address)
         return boot_invoke(eeprom, "setData", address)
     end
-
     local screen = component.list("screen")()
     local gpu = component.list("gpu")()
     if gpu and screen then
         boot_invoke(gpu, "bind", screen)
     end
-
     if not gpu then
         error("No graphics card available")
     end
@@ -65,28 +62,21 @@ do
                 end
             end
         end
-
         if #fs == 1 then
             init, initreason = tryLoadFrom(fs[1])
             break
         end
-
         table.insert(txt, "Boot default drive")
         table.insert(txt, "Restart")
         boot_invoke(gpu, "set", 1, 1, "SnowBoot v0.1")
         local memTxt = "Memory Usage: " .. tostring(math.floor((computer.totalMemory() - computer.freeMemory()) / computer.totalMemory()*1000 + 0.5)/10) .. "%"
         boot_invoke(gpu, "set", width-#memTxt, 1, memTxt)
-
         for i, t in ipairs(txt) do
             boot_invoke(gpu, "set", 1, i+1, t)
         end
-
         bot_invoke(gpu, "set", 1, height, "ReFlash / Update")
-
         local id, btn, x, y = computer.pullSignal()
-
         if id == "touch" then
-            -- Mouse clicked
             if y > 1 and y <= (#txt+1) then
                 local i = y-1
 
@@ -105,11 +95,8 @@ do
                     booted = true
                 end
             end
-
             if y == height then
                 local result = ""
-                boot_invoke(gpu, "fill", 1, 1, width, height)
-                boot_invoke(gpu, "set", 1, 1, "Updating SnowBoot...")
                 local internet = component.list("internet")()
                 local handle = boot_invoke(internet, "request", "https://raw.githubusercontent.com/lieve-blendi/BOS/main/firmware/SnowBoot.lua")
                 for chunk in handle do result = result .. chunk end
@@ -120,7 +107,6 @@ do
                 computer.shutdown(true)
             end
         end
-
         if booted then break end
     end
 end
