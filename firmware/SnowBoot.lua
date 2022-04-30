@@ -28,6 +28,7 @@ do
         error("No graphics card available")
     end
     local function tryLoadFrom(addr)
+        if not addr then return end
         boot_invoke(gpu, "fill", 1, 1, width, height)
         boot_invoke(gpu, "set", 1, 1, "Booting " .. addr .. "...")
         computer.setBootAddress(addr)
