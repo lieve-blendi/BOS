@@ -58,13 +58,17 @@ do
             if computer.tmpAddress() ~= fileSys and proxy.exists("/init.lua") then
                 table.insert(fs, fileSys)
                 local proxy = component.proxy(fileSys)
+                local selTxt = ""
+                if computer.getBootAddress() == fileSys then
+                    selTxt = " < Default boot drive"
+                end
                 local label = proxy.getLabel()
                 local usedspace = math.floor((proxy.spaceUsed()/1024/1024)*100)/100
                 local totalspace = math.floor((proxy.spaceTotal()/1024/1024)*100)/100
                 if label then
-                    table.insert(txt, "Drive: " .. label .. " (" .. fileSys .. ") - " .. usedspace .. "/" .. totalspace .. "MB used")
+                    table.insert(txt, "Drive: " .. label .. " (" .. fileSys .. ") - " .. usedspace .. "/" .. totalspace .. "MB used" .. selTxt)
                 else
-                    table.insert(txt, "Drive: " .. fileSys .. " - " .. usedspace .. "/" .. totalspace .. "MB used")
+                    table.insert(txt, "Drive: " .. fileSys .. " - " .. usedspace .. "/" .. totalspace .. "MB used" .. selTxt)
                 end
             end
         end
