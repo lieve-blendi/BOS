@@ -307,6 +307,7 @@ local function handleInput()
         if f then
             boot_invoke(eeprom, "set", f)
             boot_invoke(eeprom, "setLabel", "NetworkBoot")
+            msg = "Reinstalled NetworkBoot"
             return
         end
     end
@@ -315,6 +316,7 @@ local function handleInput()
         if f then
             boot_invoke(eeprom, "set", f)
             boot_invoke(eeprom, "setLabel", "CloudBoot")
+            msg = "Changed to CloudBoot"
             return
         end
     end
@@ -323,6 +325,7 @@ local function handleInput()
         if f then
             boot_invoke(eeprom, "set", f)
             boot_invoke(eeprom, "setLabel", "SnowBoot")
+            msg = "Changed to SnowBoot"
             return
         end
     end
@@ -331,6 +334,7 @@ local function handleInput()
         if f then
             boot_invoke(eeprom, "set", f)
             boot_invoke(eeprom, "setLabel", "B-BIOS")
+            msg = "Changed to B-BIOS"
             return
         end
     end
