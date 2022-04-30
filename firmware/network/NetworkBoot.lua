@@ -16,7 +16,7 @@ do
 	handle.close()
 end
 
-result, reason = load(result, "=installer")
+result, reason = load(result, "=runner")
 
 if result then
 	result, reason = xpcall(result, debug.traceback)
