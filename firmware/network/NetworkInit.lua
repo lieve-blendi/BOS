@@ -104,6 +104,7 @@ local function getOptions()
             "Restart",
             "Re-Flash",
             "Change BIOS",
+            "Demo BIOS",
         }
     end
     -- Boot
@@ -155,6 +156,14 @@ local function getOptions()
     if current == "change_bios" then
         local t = {
             "NetworkBoot (CURRENT)",
+            "CloudBoot",
+            "SnowBoot",
+            "B-BIOS",
+        }
+    end
+
+    if current == "demo_bios" then
+        local t = {
             "CloudBoot",
             "SnowBoot",
             "B-BIOS",
@@ -247,6 +256,12 @@ local function handleInput()
         pointer = 1
         return
     end
+    if current == "main" and pointer == 6 then
+        current = "demo_bios"
+        options = getOptions()
+        pointer = 1
+        return
+    end
     if current == "boot" and pointer == (#fs+1) then
         current = "main"
         options = getOptions()
@@ -303,11 +318,66 @@ local function handleInput()
         end
     end
     if current == "change_bios" and pointer == 4 then
-        local f = downloadFile("https://raw.githubusercontent.com/lieve-blendi/BOS/main/firmware/network/B-BIOS.lua")
+        local f = downloadFile("https://raw.githubusercontent.com/lieve-blendi/BOS/main/firmware/B-BIOS.lua")
         if f then
             boot_invoke(eeprom, "set", f)
             boot_invoke(eeprom, "setLabel", "B-BIOS")
             return
+        end
+    end
+
+    if current == "demo_bios" then
+
+        if pointer == 1 then
+            local f = downloadFile("https://raw.githubusercontent.com/lieve-blendi/BOS/main/firmware/CloudBoot/Boot.lua")
+            if f then
+                local result, reason = load(f, "=demo_bios")
+
+                if result then
+                    result, reason = xpcall(result, debug.traceback)
+
+                    if not result then
+                        msg = reason
+                    end
+                else
+                    msg = reason
+                end
+                return
+            end
+        end
+        if pointer == 2 then
+            local f = downloadFile("https://raw.githubusercontent.com/lieve-blendi/BOS/main/firmware/SnowBoot.lua")
+            if f then
+                local result, reason = load(f, "=demo_bios")
+
+                if result then
+                    result, reason = xpcall(result, debug.traceback)
+
+                    if not result then
+                        msg = reason
+                    end
+                else
+                    msg = reason
+                end
+                return
+            end
+        end
+        if pointer == 3 then
+            local f = downloadFile("https://raw.githubusercontent.com/lieve-blendi/BOS/main/firmware/B-BIOS.lua")
+            if f then
+                local result, reason = load(f, "=demo_bios")
+
+                if result then
+                    result, reason = xpcall(result, debug.traceback)
+
+                    if not result then
+                        msg = reason
+                    end
+                else
+                    msg = reason
+                end
+                return
+            end
         end
     end
 end
