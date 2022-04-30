@@ -217,6 +217,8 @@ local function handleInput()
 
     if current == "wipe" then
         clearDrive(fs[pointer])
+        options = getOptions()
+        pointer = 1
 
         msg = "Drive wiped! All files are gone!"
     end
