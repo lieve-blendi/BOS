@@ -23,7 +23,6 @@ do
     if gpu and screen then
         boot_invoke(gpu, "bind", screen)
     end
-    local width, height = boot_invoke(gpu, "getResolution")
 
     if not gpu then
         error("No graphics card available")
