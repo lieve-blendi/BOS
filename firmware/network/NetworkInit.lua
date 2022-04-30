@@ -159,6 +159,7 @@ local function getOptions()
             "CloudBoot",
             "SnowBoot",
             "B-BIOS",
+            "Back",
         }
     end
 
@@ -167,6 +168,7 @@ local function getOptions()
             "CloudBoot",
             "SnowBoot",
             "B-BIOS",
+            "Back",
         }
     end
 end
@@ -175,7 +177,7 @@ local function downloadFile(url)
     local internetThing = component.list("internet")()
     if not internetThing then msg = "No internet card available" return end
     local internet = component.proxy(internetThing)
-    local handle, chunk = internet.request("https://raw.githubusercontent.com/lieve-blendi/BOS/main/firmware/network/NetworkBoot.lua")
+    local handle, chunk = internet.request(url)
 
     local result = ""
 
@@ -325,6 +327,12 @@ local function handleInput()
             return
         end
     end
+    if current == "change_bios" and pointer == 5 then
+        current = "main"
+        options = getOptions()
+        pointer = 1
+        return
+    end
 
     if current == "demo_bios" then
 
@@ -378,6 +386,12 @@ local function handleInput()
                 end
                 return
             end
+        end
+        if pointer == 4 then
+            current = "main"
+            options = getOptions()
+            pointer = 1
+            return
         end
     end
 end
