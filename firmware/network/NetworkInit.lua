@@ -95,11 +95,15 @@ local function getOptions()
             local drive = component.proxy(f)
             if drive.exists("/init.lua") then
                 local l = drive.getLabel()
+                local selTxt = ""
+                if computer.getBootAddress() == f then
+                    selTxt = " < Default boot drive"
+                end
 
                 if l then
-                    table.insert(t, l)
+                    table.insert(t, l .. selTxt)
                 else
-                    table.insert(t, f)
+                    table.insert(t, f .. selTxt)
                 end
             end
         end
@@ -136,11 +140,13 @@ local function handleInput()
     if current == "main" and pointer == 1 then
         current = "boot"
         options = getOptions()
+        pointer = 1
         return
     end
     if current == "main" and pointer == 2 then
         current = "wipe"
         options = getOptions()
+        pointer = 1
         return
     end
     if current == "main" and pointer == 3 then
@@ -151,11 +157,13 @@ local function handleInput()
     if current == "boot" and pointer == #(fs+1) then
         current = "main"
         options = getOptions()
+        pointer = 1
         return
     end
     if current == "wipe" and pointer == #(fs+1) then
         current = "main"
         options = getOptions()
+        pointer = 1
         return
     end
 
