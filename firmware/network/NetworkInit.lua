@@ -51,7 +51,7 @@ if not ((id == "key_down") and (code == 0x1D)) then
     if init then
         init()
     else
-        for fileSys in component.list("filesystem")() do
+        for fileSys in component.list("filesystem") do
             init, reason = tryLoadFrom(fileSys)
             if init then
                 return init()
