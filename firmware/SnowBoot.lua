@@ -55,7 +55,7 @@ do
         for fileSys in component.list("filesystem") do
             if computer.tmpAddress() ~= fileSys then
                 table.insert(fs, fileSys)
-                local label = component.proxy(fs[i]).getLabel()
+                local label = component.proxy(fileSys).getLabel()
                 if label then
                     table.insert(txt, "Drive: " .. label .. " (" .. fileSys .. ")")
                 else
