@@ -1,3 +1,8 @@
+local gpu = component.proxy(component.list("gpu")())
+local w, h = gpu.getResolution()
+gpu.fill(1, 1, w, h, " ")
+
+gpu.set(1, 1, "Running NetworkInit...")
 local function tryLoadFrom(addr)
     if not addr then return end
     boot_invoke(gpu, "fill", 1, 1, width, height)
@@ -21,6 +26,7 @@ end
 
 local init, initreason = tryLoadFrom(computer.getBootAddress())
 if init then
+    gpu.fill(1, 1, w, h, " ")
     init()
 else
     error("Failed to load OS: " .. initreason)
