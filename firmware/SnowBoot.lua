@@ -1,9 +1,8 @@
 local init
 local initreason
 do
-    local component_invoke = component.invoke
     local function boot_invoke(address, method, ...)
-        local result = table.pack(pcall(component_invoke, address, method, ...))
+        local result = table.pack(pcall(component.invoke, address, method, ...))
         if not result[1] then
         return nil, result[2]
         else
@@ -66,23 +65,17 @@ do
             end
         end
 
-        -- if #fs == 1 then
-        --     init, initreason = tryLoadFrom(fs[1])
-        --     break
-        -- end
-
         table.insert(txt, "Boot default drive")
         table.insert(txt, "Restart")
-
-        gpuc.setForeground(0x000000)
-        gpuc.setBackground(0xFFFFFF)
         gpuc.set(1, 1, "SnowBoot v0.1")
         local memTxt = "Memory Usage: " .. tostring(math.floor((computer.totalMemory() - computer.freeMemory()) / computer.totalMemory()*1000 + 0.5)/10) .. "%"
         gpuc.set(width-#memTxt, 1, memTxt)
 
-        gpuc.setForeground(0xFFFFFF)
-        gpuc.setBackground(0x000000)
-        local id, btn, x, y = computer.pullSIgnal()
+        for i, t in ipairs(txt) do
+            gpuc.set(i+1, 1, t)
+        end
+
+        local id, btn, x, y = computer.pullSignal()
 
         if id == "touch" then
             -- Mouse clicked
