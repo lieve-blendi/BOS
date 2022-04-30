@@ -154,7 +154,7 @@ local function getOptions()
 
     -- Change BIOS
     if current == "change_bios" then
-        local t = {
+        return {
             "NetworkBoot (CURRENT)",
             "CloudBoot",
             "SnowBoot",
@@ -163,7 +163,7 @@ local function getOptions()
     end
 
     if current == "demo_bios" then
-        local t = {
+        return {
             "CloudBoot",
             "SnowBoot",
             "B-BIOS",
