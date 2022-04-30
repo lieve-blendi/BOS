@@ -86,6 +86,7 @@ local function getOptions()
             "Boot",
             "Wipe Drives",
             "Restart",
+            "Re-Flash",
         }
     end
     -- Boot
@@ -153,6 +154,41 @@ local function handleInput()
     end
     if current == "main" and pointer == 3 then
         computer.shutdown(true)
+        return
+    end
+    if current == "main" and pointer == 4 then
+        local eeprom = component.list("eeprom")()
+        if not eeprom then
+            msg = "Uhh... did you remove your EEPROM?"
+            return
+        end
+        -- Re-flashing EEPROM
+        local internetThing = component.list("internet")()
+        if internetThing then
+            local internet = component.proxy(internetThing)
+
+            local handle, chunk = internet.request("https://raw.githubusercontent.com/lieve-blendi/BOS/main/firmware/network/NetworkBoot.lua")
+
+            local result = ""
+
+            while true do
+                chunk = handle.read(math.huge)
+                
+                if chunk then
+                    result = result .. chunk
+                else
+                    break
+                end
+            end
+
+            handle.close()
+
+            boot_invoke(eeprom, "set", result)
+
+            msg = "Reinstalled EEPROM"
+        else
+            msg = "ERROR: Did you seriously remove your internet card?"
+        end
         return
     end
 
