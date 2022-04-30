@@ -101,6 +101,7 @@ if ans == "Y" or ans == "y" or ans == "Yes" or ans == "yes" then
   print("Available options:")
   print("1. B-BIOS (minimal, fast, handles multi-booting)")
   print("2. SnowBoot (more powerful than B-BIOS but slower)")
+  print("3. CloudBoot (SnowBoot but improved, requires an internet card and internet connection)")
   print("Input the number associated with the BIOS:")
   ans = io.read()
   if ans == "1" then
@@ -125,6 +126,17 @@ if ans == "Y" or ans == "y" or ans == "Yes" or ans == "yes" then
     eeprom.set(result)
     eeprom.setLabel("SnowBoot")
     print("SnowBoot installed!")
+  elseif ans == "3" then
+    local result = ""
+
+    print("Downloading CloudBoot...")
+    local handle = internet.request(repoPath .. "/firmware/CloudBoot/Boot.lua")
+    for chunk in handle do result = result .. chunk end
+    
+    print("Installing CloudBoot...")
+    eeprom.set(result)
+    eeprom.setLabel("CloudBoot")
+    print("CloudBoot installed!")
   end
 end
 
