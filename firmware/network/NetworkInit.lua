@@ -200,6 +200,13 @@ local msg
 
 local options = getOptions()
 
+local function clearScreen()
+    local w, h = gpu.getResolution()
+    gpu.setForeground(0xFFFFFF)
+    gpu.setBackground(0x000000)
+    gpu.fill(1, 1, w, h, " ")
+end
+
 local function handleInput()
     if current == "main" and pointer == 1 then
         current = "boot"
@@ -337,6 +344,7 @@ local function handleInput()
     if current == "demo_bios" then
 
         if pointer == 1 then
+            clearScreen()
             local f = downloadFile("https://raw.githubusercontent.com/lieve-blendi/BOS/main/firmware/CloudBoot/Boot.lua")
             if f then
                 local result, reason = load(f, "=demo_bios")
@@ -354,6 +362,7 @@ local function handleInput()
             end
         end
         if pointer == 2 then
+            clearScreen()
             local f = downloadFile("https://raw.githubusercontent.com/lieve-blendi/BOS/main/firmware/SnowBoot.lua")
             if f then
                 local result, reason = load(f, "=demo_bios")
@@ -371,6 +380,7 @@ local function handleInput()
             end
         end
         if pointer == 3 then
+            clearScreen()
             local f = downloadFile("https://raw.githubusercontent.com/lieve-blendi/BOS/main/firmware/B-BIOS.lua")
             if f then
                 local result, reason = load(f, "=demo_bios")
