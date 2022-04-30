@@ -103,6 +103,7 @@ local function getOptions()
             "Wipe Drives",
             "Restart",
             "Re-Flash",
+            "Change BIOS",
         }
     end
     -- Boot
@@ -149,6 +150,39 @@ local function getOptions()
 
         return t
     end
+
+    -- Change BIOS
+    if current == "change_bios" then
+        local t = {
+            "NetworkBoot (CURRENT)",
+            "CloudBoot",
+            "SnowBoot",
+            "B-BIOS",
+        }
+    end
+end
+
+local function downloadFile(url)
+    local internetThing = component.list("internet")()
+    if not internetThing then msg = "No internet card available" return end
+    local internet = component.proxy(internetThing)
+    local handle, chunk = internet.request("https://raw.githubusercontent.com/lieve-blendi/BOS/main/firmware/network/NetworkBoot.lua")
+
+    local result = ""
+
+    while true do
+        chunk = handle.read(math.huge)
+        
+        if chunk then
+            result = result .. chunk
+        else
+            break
+        end
+    end
+
+    handle.close()
+
+    return result
 end
 
 local msg
@@ -207,7 +241,12 @@ local function handleInput()
         end
         return
     end
-
+    if current == "main" and pointer == 5 then
+        current = "change_bios"
+        options = getOptions()
+        pointer = 1
+        return
+    end
     if current == "boot" and pointer == (#fs+1) then
         current = "main"
         options = getOptions()
@@ -237,6 +276,39 @@ local function handleInput()
         pointer = 1
 
         msg = "Drive wiped! All files are gone!"
+    end
+
+    if current == "change_bios" and pointer == 1 then
+        local f = downloadFile("https://raw.githubusercontent.com/lieve-blendi/BOS/main/firmware/network/NetworkBoot.lua")
+        if f then
+            boot_invoke(eeprom, "set", f)
+            boot_invoke(eeprom, "setLabel", "NetworkBoot")
+            return
+        end
+    end
+    if current == "change_bios" and pointer == 2 then
+        local f = downloadFile("https://raw.githubusercontent.com/lieve-blendi/BOS/main/firmware/CloudBoot/Boot.lua")
+        if f then
+            boot_invoke(eeprom, "set", f)
+            boot_invoke(eeprom, "setLabel", "CloudBoot")
+            return
+        end
+    end
+    if current == "change_bios" and pointer == 3 then
+        local f = downloadFile("https://raw.githubusercontent.com/lieve-blendi/BOS/main/firmware/SnowBoot.lua")
+        if f then
+            boot_invoke(eeprom, "set", f)
+            boot_invoke(eeprom, "setLabel", "SnowBoot")
+            return
+        end
+    end
+    if current == "change_bios" and pointer == 4 then
+        local f = downloadFile("https://raw.githubusercontent.com/lieve-blendi/BOS/main/firmware/network/B-BIOS.lua")
+        if f then
+            boot_invoke(eeprom, "set", f)
+            boot_invoke(eeprom, "setLabel", "B-BIOS")
+            return
+        end
     end
 end
 
@@ -295,6 +367,16 @@ repeat
         elseif code == KeyMap.down then
             if pointer < #options then
                 pointer = pointer + 1
+            end
+        end
+    elseif id == "touch" then
+        local x = addr
+        local y = char
+
+        if y > 0 and y <= #options then
+            if ((x > 0) and (x < #(options[y])) then
+                pointer = y
+                handleInput()
             end
         end
     end
