@@ -47,10 +47,9 @@ do
         boot_invoke(addr, "close", handle)
         return load(buffer, "=init")
     end
-    local gpuc = component.proxy(gpu)
     while true do
-        local width, height = gpuc.getResolution()
-        gpuc.fill(1, 1, width, height, " ")
+        local width, height = boot_invoke(gpu, "getResolution")
+        boot_invoke(gpu, "fill", 1, 1, width, height, " ")
         local fs = {}
         local txt = {}
         for fileSys in component.list("filesystem") do
@@ -67,12 +66,12 @@ do
 
         table.insert(txt, "Boot default drive")
         table.insert(txt, "Restart")
-        gpuc.set(1, 1, "SnowBoot v0.1")
+        boot_invoke(gpu, "set", 1, 1, "SnowBoot v0.1")
         local memTxt = "Memory Usage: " .. tostring(math.floor((computer.totalMemory() - computer.freeMemory()) / computer.totalMemory()*1000 + 0.5)/10) .. "%"
-        gpuc.set(width-#memTxt, 1, memTxt)
+        boot_invoke(gpu, "set", width-#memTxt, 1, memTxt)
 
         for i, t in ipairs(txt) do
-            gpuc.set(i+1, 1, t)
+            boot_invoke(gpu, "set", i+1, 1, t)
         end
 
         local id, btn, x, y = computer.pullSignal()
