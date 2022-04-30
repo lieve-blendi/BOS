@@ -72,14 +72,15 @@ do
         end
         table.insert(txt, "Boot default drive")
         table.insert(txt, "Restart")
-        boot_invoke(gpu, "set", 1, 1, "CloudBoot v0.1 (Based off of SnowBoot)")
+        boot_invoke(gpu, "set", 1, 1, "CloudBoot v0.1 (Based off of SnowBoot v0.1)")
+        boot_invoke(gpu, "set", 1, 2, "Click a drive to boot into it!")
         for i, t in ipairs(txt) do
-            boot_invoke(gpu, "set", 1, i+1, t)
+            boot_invoke(gpu, "set", 1, i+3, t)
         end
         local id, btn, x, y = computer.pullSignal()
         if id == "touch" then
-            if y > 1 and y <= (#txt+1) then
-                local i = y-1
+            if y > 3 and y <= (#txt+3) then
+                local i = y-3
 
                 for ind, f in ipairs(fs) do
                     if ind == i then
