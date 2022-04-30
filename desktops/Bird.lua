@@ -23,16 +23,21 @@ function Bird:load()
 end
 
 function Bird:processSignal(signal)
-  -- if type(signal[1]) == "string" then
-  --   self.RGPU:drawWithInstructions({
-  --     {
-  --       type = "text",
-  --       x = 1,
-  --       y = 2,
-  --       text = signal[1],
-  --     }
-  --   })
-  -- end
+  if type(signal[1]) == "string" then
+    local sw,sy = self.RGPU.gpu.getResolution()
+    local event = signal[1]
+
+    if event == "touch" then
+      local x, y = signal[2], signal[3]
+      if y == sy then
+        if x > 2 and x < 11 then
+          computer.shutdown(false)
+        elseif x > 13 and x < 21 then
+          computer.shutdown(true)
+        end
+      end
+    end
+  end
 end
 
 function Bird:show()
@@ -46,7 +51,14 @@ function Bird:show()
     {
       {type = "rect", x = 1, y = 1, w = sw, h = 1, pixel = self.RGPU:pixel(0x1c76ba, " ", false)},
       {type = "text", x = 2, y = 1, text = OS.name .. " v" .. OS.version .. " - Bird Desktop Environment"},
-      {type = "text", x = sw - #debugText, y = 1, text = debugText}
+      {type = "text", x = sw - #debugText, y = 1, text = debugText},
+      {type = "rect", x = 1, y = sy, w = sw, h = 1, pixel = self.RGPU:pixel(0x1c76ba, " ", false)}
+      {
+        type = "text",
+        x = 1,
+        y = sy,
+        text = "| Shutdown | Restart |",
+      },
     }
   )
 end
