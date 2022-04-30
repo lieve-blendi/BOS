@@ -66,6 +66,11 @@ do
             end
         end
 
+        if #fs == 1 then
+            init, initreason = tryLoadFrom(fs[1])
+            break
+        end
+
         table.insert(txt, "Boot default drive")
         table.insert(txt, "Restart")
 
@@ -98,4 +103,9 @@ do
             end
         end
     end
+end
+if init then
+    init()
+else
+    error("Failed to load OS: " .. initreason)
 end
