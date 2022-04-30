@@ -43,7 +43,7 @@ gpu.fill(1, 1, w, h, " ")
 gpu.set(1, 1, "Network Boot v0.1")
 gpu.set(1, 2, "Waiting for user response")
 
-local id, addr, char, code = computer.pullSignal(3)
+local id, addr, char, code = computer.pullSignal(35)
 if not ((id == "key_down") and (code == 0x1D)) then
     -- If the user did not press left control, we go to quick boot
     local init, reason = tryLoadFrom(computer.getBootAddress()) -- Attempt to boot into last boot address
