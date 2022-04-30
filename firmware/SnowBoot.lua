@@ -72,7 +72,6 @@ do
         for i, t in ipairs(txt) do
             boot_invoke(gpu, "set", 1, i+1, t)
         end
-        boot_invoke(gpu, "set", 1, height, "ReFlash / Update")
         local id, btn, x, y = computer.pullSignal()
         if id == "touch" then
             if y > 1 and y <= (#txt+1) then
@@ -92,14 +91,6 @@ do
                     computer.shutdown(true)
                     booted = true
                 end
-            end
-            if y == height then
-                local result = ""
-                local internet = component.list("internet")()
-                local handle = boot_invoke(internet, "request", "https://raw.githubusercontent.com/lieve-blendi/BOS/main/firmware/SnowBoot.lua")
-                for chunk in handle do result = result .. chunk end
-                boot_invoke(eeprom, "set", result)
-                computer.shutdown(true)
             end
         end
         if booted then break end
