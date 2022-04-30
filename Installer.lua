@@ -67,6 +67,7 @@ local ans = io.read()
 if ans == "Y" or ans == "y" or ans == "Yes" or ans == "yes" then
   local files = pickeddriveproxy.list("/")
   for k,v in ipairs(files) do
+    print("Deleting " .. v .. "...")
     pickeddriveproxy.remove(v)
   end
 end
