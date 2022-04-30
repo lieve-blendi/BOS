@@ -28,7 +28,7 @@ function Bird:processSignal(signal)
     local event = signal[1]
 
     if event == "touch" then
-      local x, y = signal[2], signal[3]
+      local x, y = signal[3], signal[4]
       if y == sy then
         if x > 2 and x < 11 then
           computer.shutdown(false)
