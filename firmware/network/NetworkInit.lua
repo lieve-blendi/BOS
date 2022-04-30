@@ -76,12 +76,24 @@ local function clearDrive(addr)
     for k,v in ipairs(files) do
         pickeddriveproxy.remove(v)
     end
+    pickeddriveproxy.setLabel(nil)
 end
 
 local fs = {}
 
 local current = "main"
 local pointer = 1
+
+local function bootableFS()
+    local t = {}
+    for _, f in ipairs(fs) do
+        local drive = component.proxy(f)
+        if drive.exists("/init.lua") then
+            table.insert(t, f)
+        end
+    end
+    return t
+end
 
 local function getOptions()
     -- Main screen
@@ -210,7 +222,7 @@ local function handleInput()
     end
 
     if current == "boot" then
-        local init, initreason = tryLoadFrom(fs[pointer])
+        local init, initreason = tryLoadFrom(bootableFS()[pointer])
 
         if init then
             init()
