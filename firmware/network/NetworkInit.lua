@@ -8,8 +8,21 @@ local function boot_invoke(address, method, ...)
     end
 end
 
+local gpu = component.proxy(component.list("gpu")())
+local w, h = gpu.getResolution()
+gpu.setForeground(0xFFFFFF)
+gpu.setBackground(0x000000)
+gpu.fill(1, 1, w, h, " ")
+
+gpu.set(1, 1, "Network Boot v0.1")
+gpu.set(1, 2, "Waiting for user response")
+
 local function tryLoadFrom(addr)
     computer.setBootAddress(addr)
+    gpu.setForeground(0xFFFFFF)
+    gpu.setBackground(0x000000)
+    gpu.fill(1, 1, w, h, " ")
+    gpu.set(1, 1, "Booting in " .. addr .. "...")
     local handle, reason = boot_invoke(addr, "open", "/init.lua")
     if not handle then
         return nil, reason
@@ -33,15 +46,6 @@ end
 computer.setBootAddress = function(address)
     return boot_invoke(eeprom, "setData", address)
 end
-
-local gpu = component.proxy(component.list("gpu")())
-local w, h = gpu.getResolution()
-gpu.setForeground(0xFFFFFF)
-gpu.setBackground(0x000000)
-gpu.fill(1, 1, w, h, " ")
-
-gpu.set(1, 1, "Network Boot v0.1")
-gpu.set(1, 2, "Waiting for user response")
 
 local id, addr, char, code = computer.pullSignal(5)
 if not ((id == "key_down") and (code == 0x1D)) then
@@ -259,7 +263,7 @@ repeat
         gpu.set(1, h, msg)
     end
 
-    local id, addr, char, code = computer.pullSignal()
+    local id, addr, char, code = computer.pullSignal(0.1)
 
     -- Reload FileSystem in case drives changed
     fs = {}
