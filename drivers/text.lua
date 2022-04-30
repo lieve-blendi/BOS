@@ -75,12 +75,16 @@ function Text.PatternFunctionReplace(string,pattern,replacefunc)
   return newdata
 end
 
-function Text.startswith(string,pattern)
-  return string.sub(string,1,#pattern) == pattern
+function Text.startswith(str,pattern)
+  return str:sub(1,#pattern) == pattern
 end
 
-function Text.endswith(string,pattern)
-  return string.sub(string,-#pattern) == pattern
+function Text.endswith(str,pattern)
+  return str:sub(-#pattern) == pattern
+end
+
+function Text.contains(str, pattern)
+  return (str:find(pattern) ~= nil)
 end
 
 return Text
