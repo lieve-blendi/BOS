@@ -71,15 +71,15 @@ do
         boot_invoke(gpu, "set", width-#memTxt, 1, memTxt)
 
         for i, t in ipairs(txt) do
-            boot_invoke(gpu, "set", i+1, 1, t)
+            boot_invoke(gpu, "set", 1, i+1, t)
         end
 
         local id, btn, x, y = computer.pullSignal()
 
         if id == "touch" then
             -- Mouse clicked
-            if x > 1 and x <= (#txt+1) then
-                local i = x-1
+            if y > 1 and y <= (#txt+1) then
+                local i = y-1
 
                 for ind, f in ipairs(fs) do
                     if ind == i then
