@@ -72,7 +72,7 @@ do
         for i, t in ipairs(txt) do
             boot_invoke(gpu, "set", 1, i+1, t)
         end
-        bot_invoke(gpu, "set", 1, height, "ReFlash / Update")
+        boot_invoke(gpu, "set", 1, height, "ReFlash / Update")
         local id, btn, x, y = computer.pullSignal()
         if id == "touch" then
             if y > 1 and y <= (#txt+1) then
