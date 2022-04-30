@@ -19,4 +19,9 @@ local function tryLoadFrom(addr)
     return load(buffer, "=init")
 end
 
-tryLoadFrom(computer.getBootAddress())
+local init, initreason = tryLoadFrom(computer.getBootAddress())
+if init then
+    init()
+else
+    error("Failed to load OS: " .. initreason)
+end

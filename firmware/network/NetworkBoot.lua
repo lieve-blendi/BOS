@@ -34,7 +34,7 @@ local result = ""
 local handle = boot_invoke(internet, "request", ref)
 for chunk in handle do result = result .. chunk end
 
-local init, initreason = load(result)
+local init, initreason = load(result, '=NetworkBoot.lua', 'bt', _G)
 if init then
     init()
 else
