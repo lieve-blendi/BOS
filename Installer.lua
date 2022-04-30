@@ -62,6 +62,15 @@ end
 local pickeddriveproxy = component.proxy(pickeddrive)
 print("You picked drive: " .. pickeddrive)
 
+print("Would you like to clear this drive?")
+local ans = io.read()
+if ans == "Y" or ans == "y" or ans == "Yes" or ans == "yes" then
+  local files = pickeddriveproxy.list("/")
+  for k,v in ipairs(files) do
+    pickeddriveproxy.remove(v)
+  end
+end
+
 for _, p in ipairs(filePaths) do
   if isLuaScript(p) then
     local result = ""
