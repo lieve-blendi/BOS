@@ -468,7 +468,7 @@ repeat
             end
         end
     elseif id == "touch" then
-        local y = code-1
+        local y = code
 
         if y > 0 and y <= #options then
             pointer = y
