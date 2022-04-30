@@ -1,7 +1,7 @@
 local result, reason = ""
 
 do
-	local handle, chunk = component.proxy(component.list("internet")() or error("You need an internet card to use NetworkBoot, please add one.")).request("https://raw.githubusercontent.com/lieve-blendi/BOS/main/firmware/CloudBoot/Init.lua")
+	local handle, chunk = component.proxy(component.list("internet")() or error("You need an internet card to use NetworkBoot, please add one.")).request("https://raw.githubusercontent.com/lieve-blendi/BOS/main/firmware/network/NetworkInit.lua")
 
 	while true do
 		chunk = handle.read(math.huge)

@@ -102,7 +102,7 @@ if ans == "Y" or ans == "y" or ans == "Yes" or ans == "yes" then
   print("1. B-BIOS (minimal, fast, handles multi-booting)")
   print("2. SnowBoot (more powerful than B-BIOS but slower)")
   print("3. CloudBoot (SnowBoot but improved, requires an internet card and internet connection)")
-  print("3. NetworkBoot (The most powerful BIOS yet, requires an internet card and internet connection)")
+  print("4. NetworkBoot (The most powerful BIOS yet, requires an internet card and internet connection)")
   print("Input the number associated with the BIOS:")
   ans = io.read()
   if ans == "1" then
