@@ -71,8 +71,10 @@ if ans == "Y" or ans == "y" or ans == "Yes" or ans == "yes" then
   end
 end
 
+print("Downloading known files...")
 for _, p in ipairs(filePaths) do
   if isLuaScript(p) then
+    print("Downloading " .. p .. "...")
     local result = ""
 
     local handle = internet.request(repoPath .. p)
@@ -94,15 +96,35 @@ pickeddriveproxy.setLabel("BOS")
 print("Would you like to install our custom BIOS?")
 ans = io.read()
 if ans == "Y" or ans == "y" or ans == "Yes" or ans == "yes" then
-  local result = ""
+  print("Which BIOS would you like to install?")
+  print("Available options:")
+  print("1. B-BIOS (minimal, fast, handles multi-booting)")
+  print("2. SnowBoot (more powerful than B-BIOS but slower)")
+  print("Input the number associated with the BIOS:")
+  ans = io.read()
+  if ans == "1" then
+    local result = ""
 
-  local handle = internet.request(repoPath .. "/firmware.lua")
-  for chunk in handle do result = result .. chunk end
+    print("Downloading B-BIOS...")
+    local handle = internet.request(repoPath .. "/firmware/B-BIOS.lua")
+    for chunk in handle do result = result .. chunk end
   
-  print("Installing BIOS...")
-  eeprom.set(result)
-  eeprom.setLabel("B-BIOS")
-  print("BIOS installed!")
+    print("Installing B-BIOS...")
+    eeprom.set(result)
+    eeprom.setLabel("B-BIOS")
+    print("B-BIOS installed!")
+  elseif ans == "2" then
+    local result = ""
+
+    print("Downloading SnowBoot...")
+    local handle = internet.request(repoPath .. "/firmware/SnowBoot.lua")
+    for chunk in handle do result = result .. chunk end
+    
+    print("Installing SnowBoot...")
+    eeprom.set(result)
+    eeprom.setLabel("SnowBoot")
+    print("SnowBoot installed!")
+  end
 end
 
 computer.shutdown(true)
