@@ -43,7 +43,11 @@ end
 print("Welcome to the BOS installer!\nPlease pick a drive to install to:")
 for k,v in ipairs(drives) do
   local proxy = component.proxy(v)
-  print(k .. ". " .. proxy.spaceTotal()/1024/1024 .. "MB - " .. v)
+  if proxy.getLabel() then
+    print(k .. ". " .. math.floor((proxy.spaceUsed()/1024/1024)*100)/100 .. "/" .. math.floor((proxy.spaceTotal()/1024/1024)*100)/100 .. "MB used - " .. proxy.getLabel() .. " (" .. v .. ")")
+  else
+    print(k .. ". " .. math.floor((proxy.spaceUsed()/1024/1024)*100)/100 .. "/" .. math.floor((proxy.spaceTotal()/1024/1024)*100)/100 .. "MB used - " .. v)
+  end
 end
 local pickeddrive
 
