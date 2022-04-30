@@ -74,6 +74,8 @@ local function clearDrive(addr)
     end
 end
 
+local fs = {}
+
 local current = "main"
 local pointer = 1
 
@@ -175,8 +177,6 @@ local function handleInput()
 end
 
 local options = getOptions()
-
-local fs = {}
 
 local KeyMap = {
     enter = 0x1C,
