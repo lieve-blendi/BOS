@@ -66,11 +66,6 @@ do
             end
         end
 
-        -- if #fs == 1 then
-        --     init, initreason = tryLoadFrom(fs[1])
-        --     break
-        -- end
-
         table.insert(txt, "Boot default drive")
         table.insert(txt, "Restart")
 

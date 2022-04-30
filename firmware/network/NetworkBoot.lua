@@ -1,42 +1,29 @@
-local component_invoke = component.invoke
-local function boot_invoke(address, method, ...)
-    local result = table.pack(pcall(component_invoke, address, method, ...))
-    if not result[1] then
-    return nil, result[2]
-    else
-    return table.unpack(result, 2, result.n)
-    end
+local result, reason = ""
+
+do
+	local handle, chunk = component.proxy(component.list("internet")() or error("You need an internet card to use NetworkBoot, please add one.")).request("https://raw.githubusercontent.com/lieve-blendi/BOS/main/firmware/CloudBoot/Init.lua")
+
+	while true do
+		chunk = handle.read(math.huge)
+		
+		if chunk then
+			result = result .. chunk
+		else
+			break
+		end
+	end
+
+	handle.close()
 end
 
-local eeprom = component.list("eeprom")()
-computer.getBootAddress = function()
-    return boot_invoke(eeprom, "getData")
-end
-computer.setBootAddress = function(address)
-    return boot_invoke(eeprom, "setData", address)
-end
+result, reason = load(result, "=installer")
 
-local screen = component.list("screen")()
-local gpu = component.list("gpu")()
-if gpu and screen then
-    boot_invoke(gpu, "bind", screen)
-end
+if result then
+	result, reason = xpcall(result, debug.traceback)
 
-local internet = component.list("internet")()
-if not internet then
-    error("NetworkBoot requires internet to run. Please add an internet card")
-end
-
-local ref = "https://raw.githubusercontent.com/lieve-blendi/BOS/main/firmware/network/NetworkBoot.lua"
-boot_invoke(gpu, "set", 1, 1, "Downloading Network file...")
-
-local result = ""
-local handle = boot_invoke(internet, "request", ref)
-for chunk in handle do result = result .. chunk end
-
-local init, initreason = load(result, '=NetworkBoot.lua', 'bt', _G)
-if init then
-    init()
+	if not result then
+		error(reason)
+	end
 else
-    error("Failed to load BIOS over network: " .. initreason)
+	error(reason)
 end
