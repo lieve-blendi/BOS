@@ -98,10 +98,7 @@ do
                 local internet = component.list("internet")()
                 local handle = boot_invoke(internet, "request", "https://raw.githubusercontent.com/lieve-blendi/BOS/main/firmware/SnowBoot.lua")
                 for chunk in handle do result = result .. chunk end
-                
-                eeprom.set(result)
                 boot_invoke(eeprom, "set", result)
-                boot_invoke(eeporm, "setLabel", "SnowBoot")
                 computer.shutdown(true)
             end
         end
