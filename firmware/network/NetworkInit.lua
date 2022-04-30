@@ -252,6 +252,8 @@ repeat
     end
 
     if type(msg) == "string" then
+        gpu.setForeground(0xFFFFFF)
+        gpu.setBackground(0x000000)
         gpu.set(1, h, msg)
     end
 
