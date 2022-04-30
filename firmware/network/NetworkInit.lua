@@ -472,10 +472,8 @@ repeat
         local y = char
 
         if y > 0 and y <= #options then
-            if ((x > 0) and (x <= #(options[y]))) then
-                pointer = y
-                handleInput()
-            end
+            pointer = y
+            handleInput()
         end
     end
 until booted
