@@ -69,8 +69,6 @@ do
         table.insert(txt, "Boot default drive")
         table.insert(txt, "Restart")
         boot_invoke(gpu, "set", 1, 1, "SnowBoot v0.1")
-        local memTxt = "Memory Usage: " .. tostring(math.floor((computer.totalMemory() - computer.freeMemory()) / computer.totalMemory()*1000 + 0.5)/10) .. "%"
-        boot_invoke(gpu, "set", width-#memTxt, 1, memTxt)
         for i, t in ipairs(txt) do
             boot_invoke(gpu, "set", 1, i+1, t)
         end
