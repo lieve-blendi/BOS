@@ -1,8 +1,9 @@
 local init
 local initreason
 do
+    local component_invoke = component.invoke
     local function boot_invoke(address, method, ...)
-        local result = table.pack(pcall(component.invoke, address, method, ...))
+        local result = table.pack(pcall(component_invoke, address, method, ...))
         if not result[1] then
         return nil, result[2]
         else
@@ -47,6 +48,7 @@ do
         boot_invoke(addr, "close", handle)
         return load(buffer, "=init")
     end
+    local booted = false
     while true do
         local width, height = boot_invoke(gpu, "getResolution")
         boot_invoke(gpu, "fill", 1, 1, width, height, " ")
@@ -64,6 +66,11 @@ do
             end
         end
 
+        if #fs == 1 then
+            init, initreason = tryLoadFrom(fs[1])
+            break
+        end
+
         table.insert(txt, "Boot default drive")
         table.insert(txt, "Restart")
         boot_invoke(gpu, "set", 1, 1, "SnowBoot v0.1")
@@ -75,8 +82,6 @@ do
         end
 
         local id, btn, x, y = computer.pullSignal()
-
-        local booted = false
 
         if id == "touch" then
             -- Mouse clicked
