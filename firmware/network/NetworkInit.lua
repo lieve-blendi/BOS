@@ -223,12 +223,12 @@ repeat
         if code == KeyMap.enter then
             handleInput()
         elseif code == KeyMap.up then
-            if pointer < #options then
-                pointer = pointer + 1
-            end
-        elseif code == KeyMap.up then
             if pointer > 1 then
                 pointer = pointer - 1
+            end
+        elseif code == KeyMap.down then
+            if pointer < #options then
+                pointer = pointer + 1
             end
         end
     end
