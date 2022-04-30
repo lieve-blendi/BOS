@@ -76,6 +76,8 @@ do
 
         local id, btn, x, y = computer.pullSignal()
 
+        local booted = false
+
         if id == "touch" then
             -- Mouse clicked
             if y > 1 and y <= (#txt+1) then
@@ -84,16 +86,21 @@ do
                 for ind, f in ipairs(fs) do
                     if ind == i then
                         init, initreason = tryLoadFrom(f)
+                        booted = true
                     end
                 end
                 i = i - #fs
                 if i == 1 then
                     tryLoadFrom(computer.getBootAddress())
+                    booted = true
                 elseif i == 2 then
                     computer.shutdown(true)
+                    booted = true
                 end
             end
         end
+
+        if booted then break end
     end
 end
 if init then
