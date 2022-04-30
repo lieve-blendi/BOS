@@ -9,8 +9,6 @@ local function boot_invoke(address, method, ...)
 end
 
 local function tryLoadFrom(addr)
-    boot_invoke(gpu, "fill", 1, 1, width, height)
-    boot_invoke(gpu, "set", 1, 1, "Booting " .. addr .. "...")
     computer.setBootAddress(addr)
     local handle, reason = boot_invoke(addr, "open", "/init.lua")
     if not handle then
@@ -204,7 +202,7 @@ repeat
             gpu.setForeground(0xFFFFFF)
             gpu.setBackground(0x000000)
         end
-        gpu.set(i+2, option)
+        gpu.set(1, i+2, option)
     end
 
     if type(msg) == "string" then
