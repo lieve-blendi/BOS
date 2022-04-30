@@ -81,6 +81,8 @@ do
             boot_invoke(gpu, "set", 1, i+1, t)
         end
 
+        bot_invoke(gpu, "set", 1, height, "ReFlash / Update")
+
         local id, btn, x, y = computer.pullSignal()
 
         if id == "touch" then
@@ -96,12 +98,26 @@ do
                 end
                 i = i - #fs
                 if i == 1 then
-                    tryLoadFrom(computer.getBootAddress())
+                    init, initreason = tryLoadFrom(computer.getBootAddress())
                     booted = true
                 elseif i == 2 then
                     computer.shutdown(true)
                     booted = true
                 end
+            end
+
+            if y == height then
+                local result = ""
+                boot_invoke(gpu, "fill", 1, 1, width, height)
+                boot_invoke(gpu, "set", 1, 1, "Updating SnowBoot...")
+                local internet = component.list("internet")()
+                local handle = boot_invoke(internet, "request", "https://raw.githubusercontent.com/lieve-blendi/BOS/main/firmware/SnowBoot.lua")
+                for chunk in handle do result = result .. chunk end
+                
+                eeprom.set(result)
+                boot_invoke(eeprom, "set", result)
+                boot_invoke(eeporm, "setLabel", "SnowBoot")
+                computer.shutdown(true)
             end
         end
 
