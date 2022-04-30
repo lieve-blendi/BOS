@@ -50,7 +50,7 @@ do
     end
     local gpuc = component.proxy(gpu)
     while true do
-        local width, height = gpu.getResolution()
+        local width, height = gpuc.getResolution()
         gpuc.fill(1, 1, width, height, " ")
         local fs = {}
         local txt = {}
