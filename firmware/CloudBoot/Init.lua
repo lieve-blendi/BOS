@@ -53,7 +53,8 @@ do
         local fs = {}
         local txt = {}
         for fileSys in component.list("filesystem") do
-            if computer.tmpAddress() ~= fileSys then
+            local proxy = component.proxy(fileSys)
+            if computer.tmpAddress() ~= fileSys and proxy.exists("/init.lua") then
                 table.insert(fs, fileSys)
                 local proxy = component.proxy(fileSys)
                 local label = proxy.getLabel()
