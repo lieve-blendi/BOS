@@ -55,10 +55,14 @@ do
             if computer.tmpAddress() ~= fileSys then
                 table.insert(fs, fileSys)
                 local label = component.proxy(fileSys).getLabel()
+                local selTxt = ""
+                if computer.getBootAddress() == fileSys then
+                    selTxt = " < Default boot drive"
+                end
                 if label then
-                    table.insert(txt, "Drive: " .. label .. " (" .. fileSys .. ")")
+                    table.insert(txt, "Drive: " .. label .. " (" .. fileSys .. ")" .. selTxt)
                 else
-                    table.insert(txt, "Drive: " .. fileSys)
+                    table.insert(txt, "Drive: " .. fileSys .. selTxt)
                 end
             end
         end
