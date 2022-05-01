@@ -84,7 +84,7 @@ function Window:kill()
     end
 
     for _, ind in ipairs(indexes) do
-        table.remove(indexes, ind)
+        table.remove(self.windows, ind)
     end
 end
 
