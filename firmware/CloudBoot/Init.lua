@@ -5,7 +5,7 @@ do
     local bootfilenames = {
         "/init.lua",
         "/OS.lua",
-        "/boot/kernel/pipes"
+        "/boot/kernel/"
     }
 
     local component_invoke = component.invoke
@@ -62,30 +62,55 @@ do
         local fsfile = {}
         local txt = {}
         for _,FileToFind in ipairs(bootfilenames) do
-            for fileSys in component.list("filesystem") do
-                local proxy = component.proxy(fileSys)
-                if computer.tmpAddress() ~= fileSys and proxy.exists(FileToFind) then
-                    table.insert(fs, fileSys)
-                    table.insert(fsfile, FileToFind)
+            if FileToFind:sub(#FileToFind) == "/" then
+                for fileSys in component.list("filesystem") do
                     local proxy = component.proxy(fileSys)
-                    local selTxt = ""
-                    if computer.getBootAddress() == fileSys then
-                        selTxt = " < Default boot drive"
+
+                    for _,file in ipairs(proxy.list(FileToFind)) do
+                        if computer.tmpAddress() ~= fileSys and proxy.exists(file) then
+                            table.insert(fs, fileSys)
+                            table.insert(fsfile, FileToFind)
+                            local selTxt = ""
+                            if computer.getBootAddress() == fileSys then
+                                selTxt = " < Default boot drive"
+                            end
+                            local label = proxy.getLabel()
+                            local usedspace = math.floor((proxy.spaceUsed()/1024/1024)*100)/100
+                            local totalspace = math.floor((proxy.spaceTotal()/1024/1024)*100)/100
+                            if label then
+                                table.insert(txt, file .. " in Drive: " .. label .. " (" .. string.sub(fileSys,1,8) .. ") - " .. usedspace .. "/" .. totalspace .. "MB used" .. selTxt)
+                            else
+                                table.insert(txt, file .. " in Drive: " .. string.sub(fileSys,1,8) .. " - " .. usedspace .. "/" .. totalspace .. "MB used" .. selTxt)
+                            end
+                        end
                     end
-                    local label = proxy.getLabel()
-                    local usedspace = math.floor((proxy.spaceUsed()/1024/1024)*100)/100
-                    local totalspace = math.floor((proxy.spaceTotal()/1024/1024)*100)/100
-                    if label then
-                        table.insert(txt, FileToFind .. " in Drive: " .. label .. " (" .. string.sub(fileSys,1,8) .. ") - " .. usedspace .. "/" .. totalspace .. "MB used" .. selTxt)
-                    else
-                        table.insert(txt, FileToFind .. " in Drive: " .. string.sub(fileSys,1,8) .. " - " .. usedspace .. "/" .. totalspace .. "MB used" .. selTxt)
+                end
+            else
+                for fileSys in component.list("filesystem") do
+                    local proxy = component.proxy(fileSys)
+                    if computer.tmpAddress() ~= fileSys and proxy.exists(FileToFind) then
+                        table.insert(fs, fileSys)
+                        table.insert(fsfile, FileToFind)
+                        local proxy = component.proxy(fileSys)
+                        local selTxt = ""
+                        if computer.getBootAddress() == fileSys then
+                            selTxt = " < Default boot drive"
+                        end
+                        local label = proxy.getLabel()
+                        local usedspace = math.floor((proxy.spaceUsed()/1024/1024)*100)/100
+                        local totalspace = math.floor((proxy.spaceTotal()/1024/1024)*100)/100
+                        if label then
+                            table.insert(txt, FileToFind .. " in Drive: " .. label .. " (" .. string.sub(fileSys,1,8) .. ") - " .. usedspace .. "/" .. totalspace .. "MB used" .. selTxt)
+                        else
+                            table.insert(txt, FileToFind .. " in Drive: " .. string.sub(fileSys,1,8) .. " - " .. usedspace .. "/" .. totalspace .. "MB used" .. selTxt)
+                        end
                     end
                 end
             end
         end
         table.insert(txt, "Boot default drive")
         table.insert(txt, "Restart")
-        boot_invoke(gpu, "set", 1, 1, "CloudBoot v0.25 (Based off of SnowBoot v0.1)")
+        boot_invoke(gpu, "set", 1, 1, "CloudBoot v0.26 (Based off of SnowBoot v0.1)")
         boot_invoke(gpu, "set", 1, 2, "Click a drive to boot into it!")
         for i, t in ipairs(txt) do
             boot_invoke(gpu, "set", 1, i+3, t)
