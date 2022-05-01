@@ -55,7 +55,7 @@ function Window:processSignal(signal)
             end
         end
     elseif signal[1] == "drag" then
-        local x, y, = signal[3], signal[4]
+        local x, y = signal[3], signal[4]
 
         local dx, dy = x - self.lastX, y - self.lastY
         self.lastX = x
