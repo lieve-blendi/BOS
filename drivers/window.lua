@@ -79,12 +79,8 @@ end
 
 function Window:kill()
     local indexes = {}
-    for i, win in ipairs(self.windows) do
-        if win.kill then table.insert(indexes, i) end
-    end
-
-    for _, ind in ipairs(indexes) do
-        table.remove(self.windows, ind)
+    for i, win in pairs(self.windows) do
+        if win.kill then table.insert(self.windows, i) end
     end
 end
 
