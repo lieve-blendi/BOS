@@ -105,6 +105,7 @@ local function getOptions()
             "Re-Flash",
             "Change BIOS",
             "Demo BIOS",
+            "Cache BIOS",
         }
     end
     -- Boot
@@ -269,6 +270,18 @@ local function handleInput()
         current = "demo_bios"
         options = getOptions()
         pointer = 1
+        return
+    end
+    if current == "main" and pointer == 7 then
+        local f = downloadFile("https://raw.githubusercontent.com/lieve-blendi/BOS/main/firmware/network/NetworkInit.lua")
+        if f then
+            local d = computer.getBootAddress()
+            local handler = boot_invoke(d, "open", "/networkCache.lua")
+            boot_invoke(d, "write", handler, f)
+            boot_invoke(d,  "close", handler)
+
+            msg = "Locally cached BIOS in default boot drive (" .. d .. ")"
+        end
         return
     end
     if current == "boot" and pointer == ((#bootableFS())+1) then
