@@ -76,16 +76,16 @@ do
                     local usedspace = math.floor((proxy.spaceUsed()/1024/1024)*100)/100
                     local totalspace = math.floor((proxy.spaceTotal()/1024/1024)*100)/100
                     if label then
-                        table.insert(txt, FileToFind .. " in Drive: " .. label .. " (" .. fileSys .. ") - " .. usedspace .. "/" .. totalspace .. "MB used" .. selTxt)
+                        table.insert(txt, FileToFind .. " in Drive: " .. label .. " (" .. string.sub(fileSys,1,8) .. ") - " .. usedspace .. "/" .. totalspace .. "MB used" .. selTxt)
                     else
-                        table.insert(txt, FileToFind .. " in Drive: " .. fileSys .. " - " .. usedspace .. "/" .. totalspace .. "MB used" .. selTxt)
+                        table.insert(txt, FileToFind .. " in Drive: " .. string.sub(fileSys,1,8) .. " - " .. usedspace .. "/" .. totalspace .. "MB used" .. selTxt)
                     end
                 end
             end
         end
         table.insert(txt, "Boot default drive")
         table.insert(txt, "Restart")
-        boot_invoke(gpu, "set", 1, 1, "CloudBoot v0.2 (Based off of SnowBoot v0.1)")
+        boot_invoke(gpu, "set", 1, 1, "CloudBoot v0.25 (Based off of SnowBoot v0.1)")
         boot_invoke(gpu, "set", 1, 2, "Click a drive to boot into it!")
         for i, t in ipairs(txt) do
             boot_invoke(gpu, "set", 1, i+3, t)
