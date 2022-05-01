@@ -32,7 +32,7 @@ if not internetID then
 		return load(buffer, "=localBIOS")
 	end
 
-	for fileSys in computer.list("filesystem") do
+	for fileSys in component.list("filesystem") do
 		local init, initreason = tryLoadFrom(fileSys)
 
 		if init then init() return end
