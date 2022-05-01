@@ -14,8 +14,20 @@ gpu.setForeground(0xFFFFFF)
 gpu.setBackground(0x000000)
 gpu.fill(1, 1, w, h, " ")
 
-gpu.set(1, 1, "Network Boot v0.1")
-gpu.set(1, 2, "Waiting for user response")
+gpu.set(1, 1, "Network Boot v1")
+gpu.set(1, 2, "Press Left Control to open advanced BIOS mode")
+
+local function getBootable(drive)
+    local driveproxy = component.proxy(drive)
+
+    if driveproxy.exists("/init.lua") then
+        return "/init.lua"
+    elseif driveproxy.exists("/boot/kernel/pipes") then
+        return "/boot/kernel/pipes"
+    elseif driveproxy.exists("/OS.lua") then
+        return "/OS.lua"
+    end
+end
 
 local function tryLoadFrom(addr)
     computer.setBootAddress(addr)
@@ -23,7 +35,8 @@ local function tryLoadFrom(addr)
     gpu.setBackground(0x000000)
     gpu.fill(1, 1, w, h, " ")
     gpu.set(1, 1, "Booting in " .. addr .. "...")
-    local handle, reason = boot_invoke(addr, "open", "/init.lua")
+    local f = getBootable(addr)
+    local handle, reason = boot_invoke(addr, "open", f)
     if not handle then
         return nil, reason
     end
@@ -36,7 +49,7 @@ local function tryLoadFrom(addr)
         buffer = buffer .. (data or "")
     until not data
     boot_invoke(addr, "close", handle)
-    return load(buffer, "=init")
+    return load(buffer, "=" .. f)
 end
 
 local eeprom = component.list("eeprom")()
@@ -87,8 +100,7 @@ local pointer = 1
 local function bootableFS()
     local t = {}
     for _, f in ipairs(fs) do
-        local drive = component.proxy(f)
-        if drive.exists("/init.lua") then
+        if getBootable(f) ~= nil then
             table.insert(t, f)
         end
     end
@@ -113,7 +125,7 @@ local function getOptions()
         local t = {}
         for _, f in ipairs(fs) do
             local drive = component.proxy(f)
-            if drive.exists("/init.lua") then
+            if getBootable(f) ~= nil then
                 local l = drive.getLabel()
                 local selTxt = ""
                 if computer.getBootAddress() == f then
