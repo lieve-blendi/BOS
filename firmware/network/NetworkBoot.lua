@@ -12,10 +12,6 @@ if not internetID then
 
 	local function tryLoadFrom(addr)
 		computer.setBootAddress(addr)
-		gpu.setForeground(0xFFFFFF)
-		gpu.setBackground(0x000000)
-		gpu.fill(1, 1, w, h, " ")
-		gpu.set(1, 1, "Booting in " .. addr .. "...")
 		local handle, reason = boot_invoke(addr, "open", "/networkCache.lua")
 		if not handle then
 			return nil, reason
