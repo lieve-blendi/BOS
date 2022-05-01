@@ -2,7 +2,7 @@ local internetID = component.list("internet")()
 if not internetID then
 	local component_invoke = component.invoke
 	local function boot_invoke(address, method, ...)
-    l	ocal result = table.pack(pcall(component_invoke, address, method, ...))
+    	local result = table.pack(pcall(component_invoke, address, method, ...))
     	if not result[1] then
     		return nil, result[2]
     	else
