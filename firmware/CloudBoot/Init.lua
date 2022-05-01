@@ -111,6 +111,10 @@ do
                 end
             end
         end
+        if #fs == 1 then
+            init, initreason = tryLoadFrom(fs[1],fsfile[1])
+            break
+        end
         table.insert(txt, "Boot default drive")
         table.insert(txt, "Restart")
         boot_invoke(gpu, "set", 1, 1, "CloudBoot v0.3 (Based off of SnowBoot v0.1)")
