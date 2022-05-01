@@ -80,9 +80,9 @@ do
                                     local usedspace = math.floor((proxy.spaceUsed()/1024/1024)*100)/100
                                     local totalspace = math.floor((proxy.spaceTotal()/1024/1024)*100)/100
                                     if label then
-                                        table.insert(txt, file .. " in Drive: " .. label .. " (" .. string.sub(fileSys,1,8) .. ") - " .. usedspace .. "/" .. totalspace .. "MB used" .. selTxt)
+                                        table.insert(txt, FileToFind .. file .. " in Drive: " .. label .. " (" .. string.sub(fileSys,1,8) .. ") - " .. usedspace .. "/" .. totalspace .. "MB used" .. selTxt)
                                     else
-                                        table.insert(txt, file .. " in Drive: " .. string.sub(fileSys,1,8) .. " - " .. usedspace .. "/" .. totalspace .. "MB used" .. selTxt)
+                                        table.insert(txt, FileToFind .. file .. " in Drive: " .. string.sub(fileSys,1,8) .. " - " .. usedspace .. "/" .. totalspace .. "MB used" .. selTxt)
                                     end
                                 end
                             end
@@ -95,7 +95,6 @@ do
                     if computer.tmpAddress() ~= fileSys and proxy.exists(FileToFind) then
                         table.insert(fs, fileSys)
                         table.insert(fsfile, FileToFind)
-                        local proxy = component.proxy(fileSys)
                         local selTxt = ""
                         if computer.getBootAddress() == fileSys then
                             selTxt = " < Default boot drive"
@@ -114,7 +113,7 @@ do
         end
         table.insert(txt, "Boot default drive")
         table.insert(txt, "Restart")
-        boot_invoke(gpu, "set", 1, 1, "CloudBoot v0.27 (Based off of SnowBoot v0.1)")
+        boot_invoke(gpu, "set", 1, 1, "CloudBoot v0.3 (Based off of SnowBoot v0.1)")
         boot_invoke(gpu, "set", 1, 2, "Click a drive to boot into it!")
         for i, t in ipairs(txt) do
             boot_invoke(gpu, "set", 1, i+3, t)
