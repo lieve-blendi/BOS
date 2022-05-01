@@ -2,6 +2,12 @@
 local init
 local initreason
 do
+    local bootfilenames = {
+        "/init.lua",
+        "/OS.lua",
+        "/boot/kernel/pipes"
+    }
+
     local component_invoke = component.invoke
     local function boot_invoke(address, method, ...)
         local result = table.pack(pcall(component_invoke, address, method, ...))
@@ -53,22 +59,24 @@ do
         boot_invoke(gpu, "fill", 1, 1, width, height, " ")
         local fs = {}
         local txt = {}
-        for fileSys in component.list("filesystem") do
-            local proxy = component.proxy(fileSys)
-            if computer.tmpAddress() ~= fileSys and proxy.exists("/init.lua") then
-                table.insert(fs, fileSys)
+        for _,FileToFind in ipairs(bootfilenames) do
+            for fileSys in component.list("filesystem") do
                 local proxy = component.proxy(fileSys)
-                local selTxt = ""
-                if computer.getBootAddress() == fileSys then
-                    selTxt = " < Default boot drive"
-                end
-                local label = proxy.getLabel()
-                local usedspace = math.floor((proxy.spaceUsed()/1024/1024)*100)/100
-                local totalspace = math.floor((proxy.spaceTotal()/1024/1024)*100)/100
-                if label then
-                    table.insert(txt, "Drive: " .. label .. " (" .. fileSys .. ") - " .. usedspace .. "/" .. totalspace .. "MB used" .. selTxt)
-                else
-                    table.insert(txt, "Drive: " .. fileSys .. " - " .. usedspace .. "/" .. totalspace .. "MB used" .. selTxt)
+                if computer.tmpAddress() ~= fileSys and proxy.exists(FileToFind) then
+                    table.insert(fs, fileSys)
+                    local proxy = component.proxy(fileSys)
+                    local selTxt = ""
+                    if computer.getBootAddress() == fileSys then
+                        selTxt = " < Default boot drive"
+                    end
+                    local label = proxy.getLabel()
+                    local usedspace = math.floor((proxy.spaceUsed()/1024/1024)*100)/100
+                    local totalspace = math.floor((proxy.spaceTotal()/1024/1024)*100)/100
+                    if label then
+                        table.insert(txt, FileToFind .. " in Drive: " .. label .. " (" .. fileSys .. ") - " .. usedspace .. "/" .. totalspace .. "MB used" .. selTxt)
+                    else
+                        table.insert(txt, FileToFind .. " in Drive: " .. fileSys .. " - " .. usedspace .. "/" .. totalspace .. "MB used" .. selTxt)
+                    end
                 end
             end
         end
