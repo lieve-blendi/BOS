@@ -66,21 +66,24 @@ do
                 for fileSys in component.list("filesystem") do
                     local proxy = component.proxy(fileSys)
 
-                    for _,file in ipairs(proxy.list(FileToFind)) do
-                        if computer.tmpAddress() ~= fileSys and proxy.exists(file) then
-                            table.insert(fs, fileSys)
-                            table.insert(fsfile, FileToFind)
-                            local selTxt = ""
-                            if computer.getBootAddress() == fileSys then
-                                selTxt = " < Default boot drive"
-                            end
-                            local label = proxy.getLabel()
-                            local usedspace = math.floor((proxy.spaceUsed()/1024/1024)*100)/100
-                            local totalspace = math.floor((proxy.spaceTotal()/1024/1024)*100)/100
-                            if label then
-                                table.insert(txt, file .. " in Drive: " .. label .. " (" .. string.sub(fileSys,1,8) .. ") - " .. usedspace .. "/" .. totalspace .. "MB used" .. selTxt)
-                            else
-                                table.insert(txt, file .. " in Drive: " .. string.sub(fileSys,1,8) .. " - " .. usedspace .. "/" .. totalspace .. "MB used" .. selTxt)
+                    local files = proxy.list(FileToFind)
+                    if files then
+                        for _,file in ipairs(files) do
+                            if computer.tmpAddress() ~= fileSys and proxy.exists(file) then
+                                table.insert(fs, fileSys)
+                                table.insert(fsfile, FileToFind)
+                                local selTxt = ""
+                                if computer.getBootAddress() == fileSys then
+                                    selTxt = " < Default boot drive"
+                                end
+                                local label = proxy.getLabel()
+                                local usedspace = math.floor((proxy.spaceUsed()/1024/1024)*100)/100
+                                local totalspace = math.floor((proxy.spaceTotal()/1024/1024)*100)/100
+                                if label then
+                                    table.insert(txt, file .. " in Drive: " .. label .. " (" .. string.sub(fileSys,1,8) .. ") - " .. usedspace .. "/" .. totalspace .. "MB used" .. selTxt)
+                                else
+                                    table.insert(txt, file .. " in Drive: " .. string.sub(fileSys,1,8) .. " - " .. usedspace .. "/" .. totalspace .. "MB used" .. selTxt)
+                                end
                             end
                         end
                     end
