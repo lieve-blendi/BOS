@@ -32,13 +32,14 @@ do
     if not gpu then
         error("No graphics card available")
     end
-    local function tryLoadFrom(addr)
+    local function tryLoadFrom(addr,filename)
+        filename = filename or "/init.lua"
         if not addr then return end
         local width, height = boot_invoke(gpu, "getResolution")
         boot_invoke(gpu, "fill", 1, 1, width, height)
         boot_invoke(gpu, "set", 1, 1, "Booting " .. addr .. "...")
         computer.setBootAddress(addr)
-        local handle, reason = boot_invoke(addr, "open", "/init.lua")
+        local handle, reason = boot_invoke(addr, "open", filename)
         if not handle then
             return nil, reason
         end
@@ -51,19 +52,21 @@ do
             buffer = buffer .. (data or "")
         until not data
         boot_invoke(addr, "close", handle)
-        return load(buffer, "=init")
+        return load(buffer, "=" .. filename)
     end
     local booted = false
     while true do
         local width, height = boot_invoke(gpu, "getResolution")
         boot_invoke(gpu, "fill", 1, 1, width, height, " ")
         local fs = {}
+        local fsfile = {}
         local txt = {}
         for _,FileToFind in ipairs(bootfilenames) do
             for fileSys in component.list("filesystem") do
                 local proxy = component.proxy(fileSys)
                 if computer.tmpAddress() ~= fileSys and proxy.exists(FileToFind) then
                     table.insert(fs, fileSys)
+                    table.insert(fsfile, FileToFind)
                     local proxy = component.proxy(fileSys)
                     local selTxt = ""
                     if computer.getBootAddress() == fileSys then
@@ -80,10 +83,6 @@ do
                 end
             end
         end
-        if #fs == 1 then
-            init, initreason = tryLoadFrom(fs[1])
-            break
-        end
         table.insert(txt, "Boot default drive")
         table.insert(txt, "Restart")
         boot_invoke(gpu, "set", 1, 1, "CloudBoot v0.1 (Based off of SnowBoot v0.1)")
@@ -98,7 +97,7 @@ do
 
                 for ind, f in ipairs(fs) do
                     if ind == i then
-                        init, initreason = tryLoadFrom(f)
+                        init, initreason = tryLoadFrom(f,fsfile[i])
                         booted = true
                     end
                 end
