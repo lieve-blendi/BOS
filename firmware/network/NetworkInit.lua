@@ -220,6 +220,12 @@ local function clearScreen()
     gpu.fill(1, 1, w, h, " ")
 end
 
+local function showMsg(msg)
+    local w, h = gpu.getResolution()
+
+    gpu.set(1, h, msg or "No message set")
+end
+
 local function handleInput()
     if current == "main" and pointer == 1 then
         current = "boot"
@@ -328,8 +334,10 @@ local function handleInput()
     end
 
     if current == "change_bios" and pointer == 1 then
+        showMsg("Downloading NetworkBoot...")
         local f = downloadFile("https://raw.githubusercontent.com/lieve-blendi/BOS/main/firmware/network/NetworkBoot.lua")
         if f then
+            showMsg("Flashing NetworkBoot...")
             boot_invoke(eeprom, "set", f)
             boot_invoke(eeprom, "setLabel", "NetworkBoot")
             msg = "Reinstalled NetworkBoot"
@@ -337,8 +345,10 @@ local function handleInput()
         end
     end
     if current == "change_bios" and pointer == 2 then
+        showMsg("Downloading CloudBoot...")
         local f = downloadFile("https://raw.githubusercontent.com/lieve-blendi/BOS/main/firmware/CloudBoot/Boot.lua")
         if f then
+            showMsg("Flashing CloudBoot...")
             boot_invoke(eeprom, "set", f)
             boot_invoke(eeprom, "setLabel", "CloudBoot")
             msg = "Changed to CloudBoot"
@@ -346,8 +356,10 @@ local function handleInput()
         end
     end
     if current == "change_bios" and pointer == 3 then
+        showMsg("Downloading SnowBoot...")
         local f = downloadFile("https://raw.githubusercontent.com/lieve-blendi/BOS/main/firmware/SnowBoot.lua")
         if f then
+            showMsg("Flashing SnowBoot...")
             boot_invoke(eeprom, "set", f)
             boot_invoke(eeprom, "setLabel", "SnowBoot")
             msg = "Changed to SnowBoot"
@@ -355,8 +367,10 @@ local function handleInput()
         end
     end
     if current == "change_bios" and pointer == 4 then
+        showMsg("Downloading B-BIOS...")
         local f = downloadFile("https://raw.githubusercontent.com/lieve-blendi/BOS/main/firmware/B-BIOS.lua")
         if f then
+            showMsg("Flashing B-BIOS...")
             boot_invoke(eeprom, "set", f)
             boot_invoke(eeprom, "setLabel", "B-BIOS")
             msg = "Changed to B-BIOS"
