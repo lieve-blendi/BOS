@@ -85,7 +85,7 @@ do
         end
         table.insert(txt, "Boot default drive")
         table.insert(txt, "Restart")
-        boot_invoke(gpu, "set", 1, 1, "CloudBoot v0.1 (Based off of SnowBoot v0.1)")
+        boot_invoke(gpu, "set", 1, 1, "CloudBoot v0.2 (Based off of SnowBoot v0.1)")
         boot_invoke(gpu, "set", 1, 2, "Click a drive to boot into it!")
         for i, t in ipairs(txt) do
             boot_invoke(gpu, "set", 1, i+3, t)
