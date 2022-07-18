@@ -94,7 +94,7 @@ local deskCache = {}
 Desktops = setmetatable({}, {
   __index = function(t, k)
     if deskCache[k] == nil then
-      deskCache[k] = FileSystem:loadfile("/desktops/" .. k .. ".lua")
+      deskCache[k] = FileSystem:loadfile("/desktops/" .. k .. "/run.lua")
     end
     return deskCache[k]
   end

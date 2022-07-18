@@ -6,7 +6,7 @@ Turtle.Keyboard = Drivers.keyboard
 Turtle.Text = Drivers.text
 Turtle.CurrentProgram = "Shell"
 
-local Message = FileSystem:loadfile("apps/message.lua")
+local Message = FileSystem:loadfile("desktops/Turtle/message.lua")
 
 Turtle.Keyboard:AddListener(function(key,down)
     if Turtle.CurrentProgram == "Shell" and down then
