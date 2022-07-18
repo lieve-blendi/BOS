@@ -9,12 +9,14 @@ local filePaths = {
   "/drivers/window.lua",
   "/drivers/keys.lua",
   "/desktops",
-  "/desktops/Bird.lua",
-  "/desktops/Turtle.lua",
+  "/desktops/Turtle",
+  "/desktops/Turtle/run.lua",
+  "/desktops/Turtle/message.lua",
+  "/desktops/Bird",
+  "/desktops/Bird/run.lua",
   "/shells",
   "/shells/Carrot.lua",
   "/apps",
-  "/apps/message.lua"
 }
 
 local component = require("component")
