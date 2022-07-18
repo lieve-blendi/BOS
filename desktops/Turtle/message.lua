@@ -50,7 +50,7 @@ Message.Keyboard:AddListener(function(key,down,player)
             Message.Input = string.sub(Message.Input, 1, #Message.Input - 1)
         elseif key == "space" then
             Message.Input = Message.Input .. " "
-        elseif type(key) == "string" and #key == 1 then
+        else
             local kkey = key
             if Message.Singleize.Singleize(key) then
                 kkey = Message.Singleize.Singleize(key)
