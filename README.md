@@ -7,3 +7,6 @@ It provides, or will provide soon enough:
 - Basic driver system with a few built-in drivers
 - A basic filesystem API
 - A fancy boot-up sequence because yes
+
+# Install Command
+    wget -f https://raw.githubusercontent.com/lieve-blendi/BOS/main/init.lua /tmp/install.lua && /tmp/install
