@@ -9,4 +9,4 @@ It provides, or will provide soon enough:
 - A fancy boot-up sequence because yes
 
 # Install Command
-    wget -f https://raw.githubusercontent.com/lieve-blendi/BOS/main/init.lua /tmp/install.lua && /tmp/install
+    wget -f https://raw.githubusercontent.com/lieve-blendi/BOS/main/Installer.lua /tmp/install.lua && /tmp/install
