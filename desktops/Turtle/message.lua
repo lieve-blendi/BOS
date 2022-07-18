@@ -9,6 +9,8 @@ Message.RGPU = Drivers.rgpu
 Message.Input = ""
 Message.OldInput = nil
 Message.Keyboard = Drivers.keyboard
+Message.Symbols = Drivers.symbols
+Message.Singleize = Drivers.singleize
 Message.Text = Drivers.text
 Message.Keys = Drivers.keys
 
