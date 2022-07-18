@@ -14,7 +14,7 @@ function Keyboard:ProcessSignal(signal)
         DriverStore.keyboard.keysPressed[code] = true
         local listeners = DriverStore.keyboard.listeners
         for _, l in ipairs(listeners) do
-            l(code, true)
+            l(code, true, signal[5])
         end
     elseif signal[1] == "key_up" then
         local code = signal[4]
@@ -22,7 +22,7 @@ function Keyboard:ProcessSignal(signal)
         DriverStore.keyboard.keysPressed[code] = false
         local listeners = DriverStore.keyboard.listeners
         for _, l in ipairs(listeners) do
-            l(code, false)
+            l(code, false, signal[5])
         end
     end
 end

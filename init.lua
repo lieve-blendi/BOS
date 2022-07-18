@@ -87,6 +87,8 @@ Shells = setmetatable({}, {
   end
 })
 
+
+
 local deskCache = {}
 
 Desktops = setmetatable({}, {
@@ -98,10 +100,12 @@ Desktops = setmetatable({}, {
   end
 })
 
-local DE
-
 function SetDesktopEnvironment(de)
   DE = de
+end
+
+function SetShell(sh)
+  SH = sh
 end
 
 function error(err)
@@ -120,7 +124,9 @@ function error(err)
   computer.shutdown(true)
 end
 
-SetDesktopEnvironment(FileSystem:loadfile("/desktops/Bird.lua"))
+SetDesktopEnvironment(Desktops.Turtle)
+
+SetShell(Shells.Carrot)
 
 DE:load()
 

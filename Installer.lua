@@ -7,10 +7,14 @@ local filePaths = {
   "/drivers/rgpu.lua",
   "/drivers/text.lua",
   "/drivers/window.lua",
+  "/drivers/keys.lua",
   "/desktops",
   "/desktops/Bird.lua",
+  "/desktops/Turtle.lua",
   "/shells",
   "/shells/Carrot.lua",
+  "/apps",
+  "/apps/message.lua"
 }
 
 local component = require("component")
