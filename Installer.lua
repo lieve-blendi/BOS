@@ -8,6 +8,8 @@ local filePaths = {
   "/drivers/text.lua",
   "/drivers/window.lua",
   "/drivers/keys.lua",
+  "/drivers/symbols.lua",
+  "/drivers/singleize.lua",
   "/desktops",
   "/desktops/Turtle",
   "/desktops/Turtle/run.lua",

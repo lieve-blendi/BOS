@@ -3,6 +3,8 @@ Turtle.RGPU = Drivers.rgpu
 Turtle.gpu = Drivers.rgpu.gpu
 Turtle.Keys = Drivers.keys
 Turtle.Keyboard = Drivers.keyboard
+Turtle.Symbols = Drivers.symbols
+Turtle.Singleize = Drivers.singleize
 Turtle.Text = Drivers.text
 Turtle.CurrentProgram = "Shell"
 
@@ -24,11 +26,19 @@ Turtle.Keyboard:AddListener(function(key,down)
             Turtle.Input = string.sub(Turtle.Input, 1, #Turtle.Input - 1)
         elseif key == "space" then
             Turtle.Input = Turtle.Input .. " "
-        elseif type(key) == "string" and #key == 1 then
-            if Turtle.Keyboard:IsDown(Turtle.Keys["lshift"]) then
-                key = string.upper(key)
+        else
+            local kkey = key
+            if Turtle.Singleize.Singleize(key) then
+                Turtle.Input = Turtle.Input .. key
             end
-            Turtle.Input = Turtle.Input .. key
+            if type(kkey) == "string" and #kkey == 1 then
+                if Turtle.Symbols[key] then
+                    kkey = Turtle.Symbols[kkey]
+                else
+                    kkey = string.upper(kkey)
+                end
+                Turtle.Input = Turtle.Input .. kkey
+            end
         end
     end
 end)

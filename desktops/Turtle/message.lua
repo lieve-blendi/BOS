@@ -49,10 +49,18 @@ Message.Keyboard:AddListener(function(key,down,player)
         elseif key == "space" then
             Message.Input = Message.Input .. " "
         elseif type(key) == "string" and #key == 1 then
-            if Message.Keyboard:IsDown(Message.Keys["lshift"]) then
-                key = string.upper(key)
+            local kkey = key
+            if Message.Singleize.Singleize(key) then
+                Message.Input = Message.Input .. key
             end
-            Message.Input = Message.Input .. key
+            if type(kkey) == "string" and #kkey == 1 then
+                if Message.Symbols[key] then
+                    kkey = Message.Symbols[kkey]
+                else
+                    kkey = string.upper(kkey)
+                end
+                Message.Input = Message.Input .. kkey
+            end
         end
     end
 end)
