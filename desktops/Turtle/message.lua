@@ -51,13 +51,15 @@ Message.Keyboard:AddListener(function(key,down,player)
         elseif type(key) == "string" and #key == 1 then
             local kkey = key
             if Message.Singleize.Singleize(key) then
-                Message.Input = Message.Input .. key
+                kkey = Message.Singleize.Singleize(key)
             end
             if type(kkey) == "string" and #kkey == 1 then
-                if Message.Symbols[key] then
-                    kkey = Message.Symbols[kkey]
-                else
-                    kkey = string.upper(kkey)
+                if Message.Keyboard:IsDown(Message.Keys["lshift"]) then
+                    if Message.Symbols[kkey] then
+                        kkey = Message.Symbols[kkey]
+                    else
+                        kkey = string.upper(kkey)
+                    end
                 end
                 Message.Input = Message.Input .. kkey
             end

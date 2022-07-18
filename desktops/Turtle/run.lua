@@ -29,13 +29,15 @@ Turtle.Keyboard:AddListener(function(key,down)
         else
             local kkey = key
             if Turtle.Singleize.Singleize(key) then
-                Turtle.Input = Turtle.Input .. key
+                kkey = Turtle.Singleize.Singleize(key)
             end
             if type(kkey) == "string" and #kkey == 1 then
-                if Turtle.Symbols[key] then
-                    kkey = Turtle.Symbols[kkey]
-                else
-                    kkey = string.upper(kkey)
+                if Turtle.Keyboard:IsDown(Turtle.Keys["lshift"]) then
+                    if Turtle.Symbols[kkey] then
+                        kkey = Turtle.Symbols[kkey]
+                    else
+                        kkey = string.upper(kkey)
+                    end
                 end
                 Turtle.Input = Turtle.Input .. kkey
             end
