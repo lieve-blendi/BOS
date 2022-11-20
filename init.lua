@@ -116,7 +116,10 @@ function error(err)
   local gpu = Components.gpu
 
   gpu.set(1, 1, "BOS Error Screen")
-  gpu.set(1, 3, tostring(err) .. "_")
+  local splerr = Drivers.text.split(tostring(err),"\n")
+  for i,v in ipairs(splerr) do
+    gpu.set(1, 2+i, tostring(v) .. "_")
+  end
 
   repeat
     local e, addr, char, code = computer.pullSignal()

@@ -37,6 +37,7 @@ Message.Keyboard:AddListener(function(key,down,player)
                         Message.modem.close(42069)
                     end
                     Message.Input = ""
+                    Message.PrintStack = {}
                     Message.gpu.setBackground(0x000000)
                     Message.gpu.setForeground(0xc9c9c9)
                     Message.RGPU:clear()
