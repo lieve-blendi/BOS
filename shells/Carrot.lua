@@ -25,10 +25,6 @@ function Carrot:run(command, args)
     end
 end
 
-function Carrot:processString(str)
-    
-end
-
 Carrot:bindCommand("wget",function(args)
     local url = args[1]
     local file = args[2]
@@ -49,11 +45,18 @@ Carrot:bindCommand("wget",function(args)
     if type(DE.print) == "function" then
         DE.print("Downloading " .. url .. " to " .. file .. "...")
     end
+
     local result = ""
     local handle = Carrot.internet.request(url)
     for chunk in handle do result = result .. chunk end
 
     FileSystem.write(file, result)
+end)
+
+Carrot:bindCommand("echo",function(args)
+    if type(DE.print) == "function" then
+        DE.print((table.concat or concat)(args," "))
+    end
 end)
 
 return Carrot

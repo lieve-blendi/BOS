@@ -18,7 +18,6 @@ local filePaths = {
   "/desktops/Bird/run.lua",
   "/shells",
   "/shells/Carrot.lua",
-  "/apps",
 }
 
 local component = require("component")
