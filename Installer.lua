@@ -96,6 +96,7 @@ for _, p in ipairs(filePaths) do
       pickeddriveproxy.close(f)
     end
   else
+    print("Making folder " .. p .. "...")
     pickeddriveproxy.makeDirectory(p)
   end
 end
