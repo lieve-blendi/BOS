@@ -1,6 +1,7 @@
 local Message = {}
 
 Message.modem = Components.modem
+if not Components.modem then return end
 
 Message.PrintStack = {}
 Message.OldPrintStack = {}

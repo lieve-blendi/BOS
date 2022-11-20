@@ -116,13 +116,16 @@ function error(err)
   local gpu = Components.gpu
 
   gpu.set(1, 1, "BOS Error Screen")
+  err = tostring(err)
+  err = string.gsub(err,"\t","    ")
   local splerr = Drivers.text.split(tostring(err),"\n")
   for i,v in ipairs(splerr) do
-    gpu.set(1, 2+i, tostring(v) .. "_")
+    gpu.set(1, 2+i, tostring(v))
   end
 
+  local e, addr, char, code
   repeat
-    local e, addr, char, code = computer.pullSignal()
+    e, addr, char, code = computer.pullSignal()
   until e == 'keydown' and code == 28
   computer.shutdown(true)
 end
@@ -136,7 +139,7 @@ DE:load()
 while true do
   if DE then
     local signal = {computer.pullSignal(0.01)}
-    if signal[1] ~= nil then DE:processSignal(signal) end 
+    if signal[1] ~= nil then DE:processSignal(signal) end
     DE:show()
   end
 end
