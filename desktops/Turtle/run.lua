@@ -114,6 +114,7 @@ function Turtle:load()
 
     table.insert(Turtle.PrintStack, OS.name .. " v" .. OS.version .. " - Turtle Desktop Environment v" .. Turtle.version)
     table.insert(Turtle.PrintStack, "Running " .. SH.name .. " v" .. SH.version)
+    table.insert(Turtle.PrintStack, string.format("%4d",computer.totalMemory()/1024) .. "k RAM")
     table.insert(Turtle.PrintStack, "")
 
     Message:Init()
