@@ -19,7 +19,7 @@ Turtle.Keyboard:AddListener(function(key,down)
             if #Turtle.Input > 0 then
                 Turtle.print("> " .. Turtle.Input)
                 local spl = SH:ProcessCommand(Turtle.Input)
-                if not spl then Turtle.print("Unknown error during command handling") Turtle.Input = "" return end
+                if not spl then Turtle.print("Unknown error encountered during command handling") Turtle.Input = "" return end
                 if type(spl) == "string" then Turtle.print("ERROR: " .. string.upper(spl:sub(1,1)) .. spl:sub(2)) Turtle.Input = "" return end
                 local cmd = spl[1]
                 table.remove(spl, 1)
