@@ -12,53 +12,15 @@ Turtle.version = "0.0.1"
 
 local Message = FileSystem:loadfile("desktops/Turtle/message.lua")
 
-local function splitcmd(cmd)
-    local split = {}
-    local currindex = 1
-    local i = 0
-    while i < #cmd do
-        if split[currindex] == nil then split[currindex] = "" end
-        i = i + 1
-        local char = cmd:sub(i,i)
-        if char == '"' then
-            local found = false
-            local foundpos = 0
-            for j = i+1,#cmd do
-                local char2 = cmd:sub(j,j)
-                if char2 == '"' then
-                    found = true
-                    foundpos = j
-                    break
-                end
-            end
-            if not found then
-                Turtle.print('Unfinished " found.')
-                return
-            end
-            if split[currindex] == nil then split[currindex] = "" end
-            local spos,epos = i,foundpos
-            if spos < epos-1 and epos > spos+1 then
-                split[currindex] = split[currindex] .. string.sub(cmd,spos+1,epos-1)
-            end
-            i = foundpos
-        elseif char == " " then
-            currindex = currindex + 1
-        else
-            if split[currindex] == nil then split[currindex] = "" end
-            split[currindex] = split[currindex] .. char
-        end
-    end
-    return split
-end
-
 Turtle.Keyboard:AddListener(function(key,down)
     if Turtle.CurrentProgram == "Shell" and down then
         key = Turtle.Keys[key]
         if key == "enter" then
             if #Turtle.Input > 0 then
                 Turtle.print("> " .. Turtle.Input)
-                local spl = splitcmd(Turtle.Input)
-                if not spl then Turtle.Input = "" return end
+                local spl = SH:ProcessCommand(Turtle.Input)
+                if not spl then Turtle.print("Unknown error during command handling") Turtle.Input = "" return end
+                if type(spl) == "string" then Turtle.print("ERROR: " .. string.upper(spl:sub(1,1)) .. spl:sub(2)) Turtle.Input = "" return end
                 local cmd = spl[1]
                 table.remove(spl, 1)
                 SH:run(cmd, spl)

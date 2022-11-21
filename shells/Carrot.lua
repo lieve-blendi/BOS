@@ -25,6 +25,45 @@ function Carrot:run(command, args)
     end
 end
 
+function Carrot:ProcessCommand(cmd)
+    local split = {}
+    local currindex = 1
+    local i = 0
+    while i < #cmd do
+        if split[currindex] == nil then split[currindex] = "" end
+        i = i + 1
+        local char = cmd:sub(i,i)
+        if char == '"' then
+            local found = false
+            local foundpos = 0
+            for j = i+1,#cmd do
+                local char2 = cmd:sub(j,j)
+                if char2 == '"' then
+                    found = true
+                    foundpos = j
+                    break
+                end
+            end
+            if not found then
+                return 'unfinished " found'
+            end
+            if split[currindex] == nil then split[currindex] = "" end
+            local spos,epos = i,foundpos
+            if spos < epos-1 and epos > spos+1 then
+                split[currindex] = split[currindex] .. string.sub(cmd,spos+1,epos-1)
+            end
+            i = foundpos
+        elseif char == " " then
+            currindex = currindex + 1
+        else
+            if split[currindex] == nil then split[currindex] = "" end
+            split[currindex] = split[currindex] .. char
+        end
+    end
+    return split -- returns command name + arguments
+    -- when using this, check if its a string, if it is, thats an error message
+end
+
 Carrot:bindCommand("wget",function(args)
     local url = args[1]
     local file = args[2]
