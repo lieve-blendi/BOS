@@ -208,7 +208,7 @@ end
 
 if currmenu == "d" then
     local opt = {"Boot normally","Back"}
-    for i = 1,#txt do table.insert(opt,txt[i],1) end
+    for i = 1,#txt do table.insert(opt,1,txt[i]) end
 
     for i,v in ipairs(opt) do
         gpu.set(1, i, v)
