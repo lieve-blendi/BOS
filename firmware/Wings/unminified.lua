@@ -129,35 +129,22 @@ local function BootDefault()
     end
 end
 
+local pullsig = com.pullSignal
+
 do
 
-local id, _, _, code = com.pullSignal(3)
+local id, _, _, code = pullsig(3)
 
 if id ~= "key_down" or code ~= 29 then
     -- If the user did not press left control, we go to quick boot
-    local init = tryLoadFrom(com.getBootAddress()) -- Attempt to boot into last boot address
-
-    if init then
-        init()
-    else
-        for fileSys in c.list("filesystem") do
-            init = tryLoadFrom(fileSys)
-            if init then
-                return init()
-            end
-        end
-
-        if init then
-            init()
-        else
-            error("No bootable device found")
-        end
-    end
+    BootDefault()
 end
 
 end
 
 -- time to actually setup cool bios
+
+local t = "touch"
 
 local currmenu = "m"
 local currdrive = ""
@@ -191,14 +178,14 @@ for fileSys in c.list("filesystem") do
 end
 
 if currmenu == "m" then
-    local opt = {"d", "Update BIOS"}
+    local opt = {"Drives", "Update BIOS"}
 
     for i,v in ipairs(opt) do
         gpu.set(1, i, v)
     end
 
-    local id, _, x, y = com.pullSignal()
-    if id == "touch" then
+    local id, _, x, y = pullsig()
+    if id == t then
         for i,v in ipairs(opt) do
             if y == i then
                 if x >= 1 and x <= #v then
@@ -220,14 +207,15 @@ if currmenu == "m" then
 end
 
 if currmenu == "d" then
-    local opt = {table.unpack(txt),"Boot normally","Back"}
+    local opt = {"Boot normally","Back"}
+    for i = 1,#txt do table.insert(opt,txt[i],1) end
 
     for i,v in ipairs(opt) do
         gpu.set(1, i, v)
     end
 
-    local id, _, x, y = com.pullSignal()
-    if id == "touch" then
+    local id, _, x, y = pullsig()
+    if id == t then
         for i,v in ipairs(opt) do
             if y == i then
                 if x >= 1 and x <= #v then
@@ -253,8 +241,8 @@ if currmenu == "ds" then
         gpu.set(1, i, v)
     end
 
-    local id, _, x, y = com.pullSignal()
-    if id == "touch" then
+    local id, _, x, y = pullsig()
+    if id == t then
         for i,v in ipairs(opt) do
             if y == i then
                 if x >= 1 and x <= #v then
@@ -286,8 +274,8 @@ if currmenu == "es" then
         gpu.set(1, i, v)
     end
 
-    local id, _, x, y = com.pullSignal()
-    if id == "touch" then
+    local id, _, x, y = pullsig()
+    if id == t then
         for i,v in ipairs(opt) do
             if y == i then
                 if x >= 1 and x <= #v then
@@ -312,8 +300,8 @@ if currmenu == "e" then
         gpu.set(1, i, v)
     end
 
-    local id, _, x, y = com.pullSignal()
-    if id == "touch" then
+    local id, _, x, y = pullsig()
+    if id == t then
         for i,v in ipairs(opt) do
             if y == i then
                 if x >= 1 and x <= #v then
