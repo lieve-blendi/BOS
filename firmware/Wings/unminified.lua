@@ -28,6 +28,29 @@ local function getBootable(drive)
     end
 end
 
+local function downloadFile(url)
+    local internetThing = c.list("internet")()
+    if not internetThing then return end
+    local internet = c.proxy(internetThing)
+    local handle, chunk = internet.request(url)
+
+    local result = ""
+
+    while true do
+        chunk = handle.read(math.huge)
+        
+        if chunk then
+            result = result .. chunk
+        else
+            break
+        end
+    end
+
+    handle.close()
+
+    return result
+end
+
 local function clearDrive(addr)
     local pickeddriveproxy = c.proxy(addr)
     local files = pickeddriveproxy.list("/")
@@ -113,7 +136,7 @@ end
 
 -- time to actually setup cool bios
 
-local currmenu = "drives"
+local currmenu = "main"
 local currdrive = ""
 local currdrivetxt = ""
 
@@ -142,12 +165,41 @@ for fileSys in c.list("filesystem") do
     end
 end
 
+if currmenu == "main" then
+    local opt = {"Drives", "Update BIOS"}
+
+    for i,v in ipairs(opt) do
+        gpu.set(1, i, v)
+    end
+
+    local id, _, x, y = com.pullSignal()
+    if id == "touch" then
+        for i,v in ipairs(opt) do
+            if y == i then
+                if x >= 1 and x <= #v then
+                    if i == 1 then
+                        currmenu = "drives"
+                    elseif i == 2 then
+                        local download = downloadFile("https://raw.githubusercontent.com/lieve-blendi/BOS/main/firmware/Wings/minified.lua")
+                        if download then
+                        else
+                            currmenu = "nointcard"
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+
 if currmenu == "drives" then
     local nboot = "Boot normally"
+    local b = "Back"
     for i,v in ipairs(fses) do
         gpu.set(1, i, txt[i])
     end
     gpu.set(1,#fses+1,nboot)
+    gpu.set(1,#fses+2,b)
 
     local id, _, x, y = com.pullSignal()
     if id == "touch" then
@@ -178,6 +230,10 @@ if currmenu == "drives" then
                     end
                 end
             end
+        elseif y == #fses+2 then
+            if x >= 1 and x <= #b then
+                currmenu = "main"
+            end
         end
     end
 end
@@ -201,7 +257,7 @@ if currmenu == "drivesettings" then
                         if init then
                             init()
                         else
-                            
+                            currmenu = "bootfail"
                         end
                     elseif i == 5 then
                         currmenu = "drives"
@@ -253,6 +309,27 @@ if currmenu == "bootfail" then
                 if x >= 1 and x <= #v then
                     if i == 3 then
                         currmenu = "drivesettings"
+                    end
+                end
+            end
+        end
+    end
+end
+
+if currmenu == "nointcard" then
+    local opt = {"No internet card detected", "", "Back"}
+
+    for i,v in ipairs(opt) do
+        gpu.set(1, i, v)
+    end
+
+    local id, _, x, y = com.pullSignal()
+    if id == "touch" then
+        for i,v in ipairs(opt) do
+            if y == i then
+                if x >= 1 and x <= #v then
+                    if i == 3 then
+                        currmenu = "main"
                     end
                 end
             end
