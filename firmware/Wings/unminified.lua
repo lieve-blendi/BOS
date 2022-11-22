@@ -84,13 +84,15 @@ gpu.setForeground(0xFFFFFF)
 gpu.setBackground(0)
 gpu.fill(1, 1, w, h, " ")
 
-gpu.set(1,1, "Wings BIOS")
-gpu.set(1,2, "Press left control to boot BIOS")
+local gs = gpu.set
+
+gs(1,1, "Wings BIOS")
+gs(1,2, "Press left control to boot BIOS")
 
 local function tryLoadFrom(addr)
     com.setBootAddress(addr)
     gpu.fill(1, 1, w, h, " ")
-    gpu.set(1, 1, "Booting in " .. addr .. "...")
+    gs(1, 1, "Booting in " .. addr .. "...")
     local f = getBootable(addr)
     local handle, reason = boot_invoke(addr, "open", f)
     if not handle then
@@ -181,7 +183,7 @@ if currmenu == "m" then
     local opt = {"Drives", "Update BIOS"}
 
     for i,v in ipairs(opt) do
-        gpu.set(1, i, v)
+        gs(1, i, v)
     end
 
     local id, _, x, y = pullsig()
@@ -194,6 +196,7 @@ if currmenu == "m" then
                     elseif i == 2 then
                         local download = downloadFile("https://raw.githubusercontent.com/lieve-blendi/BOS/main/firmware/Wings/minified.lua")
                         if download then
+                            boot_invoke(eeprom, "set", download)
                         else
                             err = "No internet card detected"
                             goback = "m"
@@ -211,7 +214,7 @@ if currmenu == "d" then
     for i = 1,#txt do table.insert(opt,1,txt[i]) end
 
     for i,v in ipairs(opt) do
-        gpu.set(1, i, v)
+        gs(1, i, v)
     end
 
     local id, _, x, y = pullsig()
@@ -238,7 +241,7 @@ if currmenu == "ds" then
     local opt = {currdrivetxt,"","Erase Drive", "Boot Drive", "Back"}
 
     for i,v in ipairs(opt) do
-        gpu.set(1, i, v)
+        gs(1, i, v)
     end
 
     local id, _, x, y = pullsig()
@@ -271,7 +274,7 @@ if currmenu == "es" then
     local opt = {"Are you sure you want to erase this drive?", "", "Yes", "No"}
 
     for i,v in ipairs(opt) do
-        gpu.set(1, i, v)
+        gs(1, i, v)
     end
 
     local id, _, x, y = pullsig()
@@ -297,7 +300,7 @@ if currmenu == "e" then
     local opt = {err, "", "Back"}
 
     for i,v in ipairs(opt) do
-        gpu.set(1, i, v)
+        gs(1, i, v)
     end
 
     local id, _, x, y = pullsig()
