@@ -112,6 +112,7 @@ if ans == "Y" or ans == "y" or ans == "Yes" or ans == "yes" then
   print("2. SnowBoot (more powerful than B-BIOS but slower)")
   print("3. CloudBoot (SnowBoot but improved, requires an internet card and internet connection)")
   print("4. NetworkBoot (The most powerful BIOS yet, requires an internet card and internet connection)")
+  print("5. Wings BIOS (A BIOS that is similar in power to NetworkBoot, but does not require an internet card")
   print("Input the number associated with the BIOS:")
   ans = io.read()
   if ans == "1" then
@@ -158,6 +159,17 @@ if ans == "Y" or ans == "y" or ans == "Yes" or ans == "yes" then
     eeprom.set(result)
     eeprom.setLabel("NetworkBoot")
     print("NetworkBoot installed!")
+  elseif ans == "5" then
+    local result = ""
+
+    print("Downloading Wings BIOS...")
+    local handle = internet.request(repoPath .. "/firmware/network/Wings/minified.lua")
+    for chunk in handle do result = result .. chunk end
+    
+    print("Installing Wings BIOS...")
+    eeprom.set(result)
+    eeprom.setLabel("Wings BIOS")
+    print("Wings BIOS installed!")
   end
 end
 
