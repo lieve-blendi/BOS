@@ -163,7 +163,7 @@ if ans == "Y" or ans == "y" or ans == "Yes" or ans == "yes" then
     local result = ""
 
     print("Downloading Wings BIOS...")
-    local handle = internet.request(repoPath .. "/firmware/network/Wings/minified.lua")
+    local handle = internet.request(repoPath .. "/firmware/Wings/minified.lua")
     for chunk in handle do result = result .. chunk end
     
     print("Installing Wings BIOS...")
