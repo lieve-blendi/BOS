@@ -108,18 +108,14 @@ local function tryLoadFrom(addr)
     return load(buffer, "=" .. f)
 end
 
-do
-local id, _, _, code = com.pullSignal(3)
-
-if id ~= "key_down" or code ~= 29 then
-    -- If the user did not press left control, we go to quick boot
-    local init, reason = tryLoadFrom(com.getBootAddress()) -- Attempt to boot into last boot address
+local function BootDefault()
+    local init = tryLoadFrom(com.getBootAddress()) -- Attempt to boot into last boot address
 
     if init then
         init()
     else
         for fileSys in c.list("filesystem") do
-            init, reason = tryLoadFrom(fileSys)
+            init = tryLoadFrom(fileSys)
             if init then
                 return init()
             end
@@ -132,13 +128,42 @@ if id ~= "key_down" or code ~= 29 then
         end
     end
 end
+
+do
+
+local id, _, _, code = com.pullSignal(3)
+
+if id ~= "key_down" or code ~= 29 then
+    -- If the user did not press left control, we go to quick boot
+    local init = tryLoadFrom(com.getBootAddress()) -- Attempt to boot into last boot address
+
+    if init then
+        init()
+    else
+        for fileSys in c.list("filesystem") do
+            init = tryLoadFrom(fileSys)
+            if init then
+                return init()
+            end
+        end
+
+        if init then
+            init()
+        else
+            error("No bootable device found")
+        end
+    end
+end
+
 end
 
 -- time to actually setup cool bios
 
-local currmenu = "main"
+local currmenu = "m"
 local currdrive = ""
 local currdrivetxt = ""
+local err = ""
+local goback = ""
 
 while true do
 gpu.fill(1, 1, w, h, " ")
@@ -165,8 +190,8 @@ for fileSys in c.list("filesystem") do
     end
 end
 
-if currmenu == "main" then
-    local opt = {"Drives", "Update BIOS"}
+if currmenu == "m" then
+    local opt = {"d", "Update BIOS"}
 
     for i,v in ipairs(opt) do
         gpu.set(1, i, v)
@@ -178,12 +203,14 @@ if currmenu == "main" then
             if y == i then
                 if x >= 1 and x <= #v then
                     if i == 1 then
-                        currmenu = "drives"
+                        currmenu = "d"
                     elseif i == 2 then
                         local download = downloadFile("https://raw.githubusercontent.com/lieve-blendi/BOS/main/firmware/Wings/minified.lua")
                         if download then
                         else
-                            currmenu = "nointcard"
+                            err = "No internet card detected"
+                            goback = "m"
+                            currmenu = "e"
                         end
                     end
                 end
@@ -192,53 +219,34 @@ if currmenu == "main" then
     end
 end
 
-if currmenu == "drives" then
-    local nboot = "Boot normally"
-    local b = "Back"
-    for i,v in ipairs(fses) do
-        gpu.set(1, i, txt[i])
+if currmenu == "d" then
+    local opt = {table.unpack(txt),"Boot normally","Back"}
+
+    for i,v in ipairs(opt) do
+        gpu.set(1, i, v)
     end
-    gpu.set(1,#fses+1,nboot)
-    gpu.set(1,#fses+2,b)
 
     local id, _, x, y = com.pullSignal()
     if id == "touch" then
-        if y >= 1 and y <= #fses then
-            if x >= 1 and x <= #txt[y] then
-                currdrive = fses[y]
-                currdrivetxt = txt[y]
-                currmenu = "drivesettings"
-            end
-        elseif y == #fses+1 then
-            if x >= 1 and x <= #nboot then
-                local init, reason = tryLoadFrom(com.getBootAddress()) -- Attempt to boot into last boot address
-
-                if init then
-                    init()
-                else
-                    for fileSys in c.list("filesystem") do
-                        init, reason = tryLoadFrom(fileSys)
-                        if init then
-                            return init()
-                        end
-                    end
-
-                    if init then
-                        init()
-                    else
-                        error("No bootable device found")
+        for i,v in ipairs(opt) do
+            if y == i then
+                if x >= 1 and x <= #v then
+                    if i <= #txt then
+                        currdrive = fses[i]
+                        currdrivetxt = txt[i]
+                        currmenu = "ds"
+                    elseif i == #txt+1 then
+                        BootDefault()
+                    elseif i == #txt+2 then
+                        currmenu = "m"
                     end
                 end
-            end
-        elseif y == #fses+2 then
-            if x >= 1 and x <= #b then
-                currmenu = "main"
             end
         end
     end
 end
 
-if currmenu == "drivesettings" then
+if currmenu == "ds" then
     local opt = {currdrivetxt,"","Erase Drive", "Boot Drive", "Back"}
 
     for i,v in ipairs(opt) do
@@ -251,16 +259,18 @@ if currmenu == "drivesettings" then
             if y == i then
                 if x >= 1 and x <= #v then
                     if i == 3 then
-                        currmenu = "erasesure"
+                        currmenu = "es"
                     elseif i == 4 then
-                        local init, reason = tryLoadFrom(currdrive) -- Attempt to boot into last boot address
+                        local init = tryLoadFrom(currdrive) -- Attempt to boot into last boot address
                         if init then
                             init()
                         else
-                            currmenu = "bootfail"
+                            err = "Drive failed to boot"
+                            goback = "ds"
+                            currmenu = "e"
                         end
                     elseif i == 5 then
-                        currmenu = "drives"
+                        currmenu = "d"
                         currdrive = ""
                     end
                 end
@@ -269,7 +279,7 @@ if currmenu == "drivesettings" then
     end
 end
 
-if currmenu == "erasesure" then
+if currmenu == "es" then
     local opt = {"Are you sure you want to erase this drive?", "", "Yes", "No"}
 
     for i,v in ipairs(opt) do
@@ -283,10 +293,10 @@ if currmenu == "erasesure" then
                 if x >= 1 and x <= #v then
                     if i == 3 then
                         clearDrive(currdrive)
-                        currmenu = "drives"
+                        currmenu = "d"
                         currdrive = ""
                     elseif i == 4 then
-                        currmenu = "drives"
+                        currmenu = "d"
                         currdrive = ""
                     end
                 end
@@ -295,8 +305,8 @@ if currmenu == "erasesure" then
     end
 end
 
-if currmenu == "bootfail" then
-    local opt = {"Drive failed to boot", "", "Back"}
+if currmenu == "e" then
+    local opt = {err, "", "Back"}
 
     for i,v in ipairs(opt) do
         gpu.set(1, i, v)
@@ -308,28 +318,7 @@ if currmenu == "bootfail" then
             if y == i then
                 if x >= 1 and x <= #v then
                     if i == 3 then
-                        currmenu = "drivesettings"
-                    end
-                end
-            end
-        end
-    end
-end
-
-if currmenu == "nointcard" then
-    local opt = {"No internet card detected", "", "Back"}
-
-    for i,v in ipairs(opt) do
-        gpu.set(1, i, v)
-    end
-
-    local id, _, x, y = com.pullSignal()
-    if id == "touch" then
-        for i,v in ipairs(opt) do
-            if y == i then
-                if x >= 1 and x <= #v then
-                    if i == 3 then
-                        currmenu = "main"
+                        currmenu = goback
                     end
                 end
             end
