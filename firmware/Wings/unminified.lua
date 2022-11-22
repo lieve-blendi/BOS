@@ -180,7 +180,7 @@ for fileSys in c.list("filesystem") do
 end
 
 if currmenu == "m" then
-    local opt = {"Drives", "Update BIOS"}
+    local opt = {"Wings BIOS", "", "Drives", "Update BIOS"}
 
     for i,v in ipairs(opt) do
         gs(1, i, v)
@@ -191,12 +191,15 @@ if currmenu == "m" then
         for i,v in ipairs(opt) do
             if y == i then
                 if x >= 1 and x <= #v then
-                    if i == 1 then
+                    if i == 3 then
                         currmenu = "d"
-                    elseif i == 2 then
+                    elseif i == 4 then
                         local download = downloadFile("https://raw.githubusercontent.com/lieve-blendi/BOS/main/firmware/Wings/minified.lua")
                         if download then
                             boot_invoke(eeprom, "set", download)
+                            err = "Sucessfully updated!"
+                            goback = "m"
+                            currmenu = "e"
                         else
                             err = "No internet card detected"
                             goback = "m"
