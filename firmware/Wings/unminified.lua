@@ -115,6 +115,7 @@ end
 
 local currmenu = "drives"
 local currdrive = ""
+local currdrivetxt = ""
 
 while true do
 gpu.fill(1, 1, w, h, " ")
@@ -153,6 +154,7 @@ if currmenu == "drives" then
         if y >= 1 and y <= #fses then
             if x >= 1 and x <= #txt[y] then
                 currdrive = fses[y]
+                currdrivetxt = txt[y]
                 currmenu = "drivesettings"
             end
         elseif y == #fses+1 then
@@ -181,7 +183,7 @@ if currmenu == "drives" then
 end
 
 if currmenu == "drivesettings" then
-    local opt = {"Erase Drive", "Boot Drive", "Back"}
+    local opt = {currdrivetxt,"","Erase Drive", "Boot Drive", "Back"}
 
     for i,v in ipairs(opt) do
         gpu.set(1, i, v)
@@ -192,16 +194,16 @@ if currmenu == "drivesettings" then
         for i,v in ipairs(opt) do
             if y == i then
                 if x >= 1 and x <= #v then
-                    if i == 1 then
+                    if i == 3 then
                         currmenu = "erasesure"
-                    elseif i == 2 then
+                    elseif i == 4 then
                         local init, reason = tryLoadFrom(currdrive) -- Attempt to boot into last boot address
                         if init then
                             init()
                         else
-                            error("Failed to load OS: " .. reason)
+                            
                         end
-                    elseif i == 3 then
+                    elseif i == 5 then
                         currmenu = "drives"
                         currdrive = ""
                     end
@@ -230,6 +232,27 @@ if currmenu == "erasesure" then
                     elseif i == 4 then
                         currmenu = "drives"
                         currdrive = ""
+                    end
+                end
+            end
+        end
+    end
+end
+
+if currmenu == "bootfail" then
+    local opt = {"Drive failed to boot", "", "Back"}
+
+    for i,v in ipairs(opt) do
+        gpu.set(1, i, v)
+    end
+
+    local id, _, x, y = com.pullSignal()
+    if id == "touch" then
+        for i,v in ipairs(opt) do
+            if y == i then
+                if x >= 1 and x <= #v then
+                    if i == 3 then
+                        currmenu = "drivesettings"
                     end
                 end
             end
