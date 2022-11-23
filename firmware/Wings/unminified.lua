@@ -9,6 +9,8 @@ local bootfilenames = {
 local c = component
 local com = computer
 local component_invoke = c.invoke
+local cl = c.list
+local cp = c.proxy
 local function boot_invoke(address, method, ...)
     local result = table.pack(pcall(component_invoke, address, method, ...))
     if not result[1] then
@@ -19,7 +21,7 @@ local function boot_invoke(address, method, ...)
 end
 
 local function getBootable(drive)
-    local driveproxy = c.proxy(drive)
+    local driveproxy = cp(drive)
 
     for i,v in ipairs(bootfilenames) do
         if driveproxy.exists(v) then
@@ -29,9 +31,9 @@ local function getBootable(drive)
 end
 
 local function downloadFile(url)
-    local internetThing = c.list("internet")()
+    local internetThing = cl("internet")()
     if not internetThing then return end
-    local internet = c.proxy(internetThing)
+    local internet = cp(internetThing)
     local handle, chunk = internet.request(url)
 
     local result = ""
@@ -52,7 +54,7 @@ local function downloadFile(url)
 end
 
 local function clearDrive(addr)
-    local pickeddriveproxy = c.proxy(addr)
+    local pickeddriveproxy = cp(addr)
     local files = pickeddriveproxy.list("/")
     for k,v in ipairs(files) do
         pickeddriveproxy.remove(v)
@@ -60,7 +62,7 @@ local function clearDrive(addr)
     pickeddriveproxy.setLabel(nil)
 end
 
-local eeprom = c.list("eeprom")()
+local eeprom = cl("eeprom")()
 com.getBootAddress = function()
     return boot_invoke(eeprom, "getData")
 end
@@ -68,8 +70,8 @@ com.setBootAddress = function(address)
     return boot_invoke(eeprom, "setData", address)
 end
 
-local screen = c.list("screen")()
-local gpu = c.proxy(c.list("gpu")())
+local screen = cl("screen")()
+local gpu = cp(cl("gpu")())
 
 if gpu and screen then
     boot_invoke(gpu, "bind", screen)
@@ -116,7 +118,7 @@ local function BootDefault()
     if init then
         init()
     else
-        for fileSys in c.list("filesystem") do
+        for fileSys in cl("filesystem") do
             init = tryLoadFrom(fileSys)
             if init then
                 return init()
@@ -160,8 +162,8 @@ gpu.fill(1, 1, w, h, " ")
 local fses = {}
 local txt = {}
 
-for fileSys in c.list("filesystem") do
-    local proxy = c.proxy(fileSys)
+for fileSys in cl("filesystem") do
+    local proxy = cp(fileSys)
     if com.tmpAddress() ~= fileSys then
         table.insert(fses, fileSys)
         local selTxt = ""
@@ -214,7 +216,7 @@ end
 
 if currmenu == "d" then
     local opt = {"Boot normally","Back"}
-    for i = 1,#txt do table.insert(opt,1,txt[i]) end
+    for i = #txt,1,-1 do table.insert(opt,1,txt[i]) end
 
     for i,v in ipairs(opt) do
         gs(1, i, v)
